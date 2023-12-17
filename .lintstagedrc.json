@@ -1,6 +1,10 @@
 {
-    "*.ts": [
-      "eslint . --fix",
-      "npm run test:staged"
-    ]
+  "hooks": {
+    "pre-commit": "lint-staged",
+    "pre-push": "npm run test:ci"
+  },
+  "*.ts": [
+    "eslint . --fix",
+    "npm run test:staged"
+  ]
 }
