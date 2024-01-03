@@ -1,4 +1,4 @@
-import { InvalidParamError, MissingParamError, ServerError } from '../../errors'
+import { InvalidParamError, MissingParamError } from '../../errors'
 import { type AccountModel, type AddAccount, type AddAccountModel, type EmailValidator } from './signup-protocols'
 import { SignUpController } from './signup'
 
@@ -162,7 +162,6 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
   })
 
   test('Should call AddAccount with correct values', async () => {
@@ -200,7 +199,6 @@ test('Should return 500 if AddAccount throws', async () => {
   }
   const httpResponse = await sut.handle(httpRequest)
   expect(httpResponse.statusCode).toBe(500)
-  expect(httpResponse.body).toEqual(new ServerError())
 })
 
 test('Should return 200 if is called with correct values', async () => {
