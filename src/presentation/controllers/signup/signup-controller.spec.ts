@@ -1,6 +1,6 @@
 import { MissingParamError } from '../../errors'
-import { type Validation, type AccountModel, type AddAccount, type AddAccountModel } from './signup-protocols'
-import { SignUpController } from './signup'
+import { type Validation, type AccountModel, type AddAccount, type AddAccountModel } from './signup-controller-protocols'
+import { SignUpController } from './signup-controller'
 import { badRequest } from '@/presentation/helpers'
 
 interface SutTypes {
