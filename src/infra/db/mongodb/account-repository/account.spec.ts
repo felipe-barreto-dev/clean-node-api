@@ -6,13 +6,16 @@ describe('Account Mongo Repository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
   })
+
   afterAll(async () => {
     await MongoHelper.disconnect()
   })
+
   beforeEach(async () => {
     accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
+
   test('Should return an account on add method success', async () => {
     const sut = new AccountMongoRepository()
     const account = await sut.add({
@@ -26,6 +29,7 @@ describe('Account Mongo Repository', () => {
     expect(account.email).toBe('any_email@mail.com')
     expect(account.password).toBe('any_password')
   })
+
   test('Should return an account on loadByEmail method success', async () => {
     const sut = new AccountMongoRepository()
     await accountCollection.insertOne({
@@ -40,9 +44,25 @@ describe('Account Mongo Repository', () => {
     expect(account.email).toBe('any_email@mail.com')
     expect(account.password).toBe('any_password')
   })
+
   test('Should return null on loadByEmail method fails', async () => {
     const sut = new AccountMongoRepository()
     const account = await sut.loadByEmail('any_email@mail.com')
     expect(account).toBeFalsy()
+  })
+
+  test('Should update account access token on updateAccessToken method success', async () => {
+    const sut = new AccountMongoRepository()
+    const createdAccount = await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password'
+    })
+    const result = await accountCollection.findOne({ _id: createdAccount.insertedId })
+    expect(result.accessToken).toBeFalsy()
+    await sut.updateAccessToken(result._id.toString(), 'any_token')
+    const resultAfterUpdate = await accountCollection.findOne({ _id: result._id })
+    expect(resultAfterUpdate).toBeTruthy()
+    expect(resultAfterUpdate.accessToken).toBe('any_token')
   })
 })
