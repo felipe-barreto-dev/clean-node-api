@@ -1,4 +1,4 @@
-import { MissingParamError } from '@/presentation/errors'
+import { MissingParamError } from '../../errors'
 import { type Validation } from './validation'
 
 export class RequiredFieldValidation implements Validation {
