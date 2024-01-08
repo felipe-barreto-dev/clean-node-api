@@ -3,8 +3,8 @@ import { type AddAccountModel, type AddAccount } from '@/domain/usecases/add-acc
 import { type AuthenticationModel, type Authentication } from '@/domain/usecases/authentication'
 import { type AccountModel } from '@/domain/models/account'
 import { type Validation } from '@/presentation/helpers/validators/validation'
-import { badRequest } from '@/presentation/helpers/http-helper'
-import { MissingParamError } from '@/presentation/errors'
+import { badRequest, forbidden, serverError } from '@/presentation/helpers/http-helper'
+import { EmailInUseError, MissingParamError } from '@/presentation/errors'
 import { type HttpRequest } from '@/presentation/protocols/http'
 
 interface SutTypes {
@@ -50,7 +50,7 @@ const makeAddAccount = (): AddAccount => {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email@email.com',
-        password: 'valid_password'
+        password: 'hashed_password'
       }
       return new Promise(resolve => { resolve(fakeAccount) })
     }
@@ -90,7 +90,7 @@ describe('SignUp Controller', () => {
       return new Promise((resolve, reject) => { reject(new Error()) })
     })
     const httpResponse = await sut.handle(makeFakeRequest())
-    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   test('Should return 200 if is called with correct values', async () => {
@@ -98,10 +98,7 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
-      id: 'valid_id',
-      name: 'valid_name',
-      email: 'valid_email@email.com',
-      password: 'valid_password'
+      accessToken: 'any_token'
     })
   })
 
@@ -123,6 +120,25 @@ describe('SignUp Controller', () => {
     const { sut, authenticationStub } = makeSut()
     const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(makeFakeRequest())
-    expect(authSpy).toHaveBeenCalledWith({ email: 'valid_email@email.com', password: 'valid_password' })
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'valid_email@email.com',
+      password: 'valid_password'
+    })
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => { reject(new Error()) })
+    })
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add').mockReturnValueOnce(null)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()))
   })
 })
