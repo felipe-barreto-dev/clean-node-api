@@ -1,7 +1,7 @@
-import { MissingParamError } from '../../errors'
-import { type Validation, type AccountModel, type AddAccount, type AddAccountModel } from './signup-controller-protocols'
-import { SignUpController } from './signup-controller'
-import { badRequest } from '@/presentation/helpers'
+import { MissingParamError } from './errors'
+import { type Validation, type AccountModel, type AddAccount, type AddAccountModel } from './controllers/signup/signup-controller-protocols'
+import { SignUpController } from './controllers/signup/signup-controller'
+import { badRequest } from './helpers'
 
 interface SutTypes {
   sut: SignUpController
