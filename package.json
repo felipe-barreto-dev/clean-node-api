@@ -3,6 +3,9 @@
   "version": "1.2.0",
   "description": "NodeJs Rest API using TDD, Clean Architecture and Typescript",
   "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist && tsc",
