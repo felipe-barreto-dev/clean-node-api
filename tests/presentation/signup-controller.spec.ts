@@ -1,4 +1,4 @@
-import { SignUpController } from '@/presentation/controllers/signup/signup-controller'
+import { SignUpController } from '@/presentation/controllers/login2/signup/signup-controller'
 import { type AddAccountModel, type AddAccount } from '@/domain/usecases/add-account'
 import { type AuthenticationModel, type Authentication } from '@/domain/usecases/authentication'
 import { type AccountModel } from '@/domain/models/account'
