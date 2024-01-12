@@ -1,5 +1,7 @@
 import { type HttpRequest, type Validation } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
+import { badRequest } from '@/presentation/helpers'
+import { MissingParamError } from '@/presentation/errors'
 
 interface SutTypes {
   sut: AddSurveyController
@@ -48,5 +50,12 @@ describe('AddSurvey Controller', () => {
         answer: 'any_answer'
       }]
     })
+  })
+
+  test('Should return 400 if Validation returns an error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
