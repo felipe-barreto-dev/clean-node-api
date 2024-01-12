@@ -1,9 +1,5 @@
-import { type HttpRequest, type Validation } from './add-survey-protocols'
+import { MissingParamError, type SurveyModel, badRequest, noContent, serverError, type AddSurvey, type HttpRequest, type Validation } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
-import { badRequest, serverError } from '@/presentation/helpers'
-import { MissingParamError } from '@/presentation/errors'
-import { type SurveyModel } from '@/domain/models/survey-model'
-import { type AddSurvey } from '@/domain/usecases/add-survey'
 
 interface SutTypes {
   sut: AddSurveyController
@@ -89,5 +85,11 @@ describe('AddSurvey Controller', () => {
     jest.spyOn(addSurveyStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })

@@ -1,6 +1,4 @@
-import { type AddSurvey } from '@/domain/usecases/add-survey'
-import { badRequest, serverError } from '../../../helpers/http-helper'
-import { type HttpRequest, type HttpResponse, type Controller, type Validation } from './add-survey-protocols'
+import { type HttpRequest, type HttpResponse, type Controller, type Validation, type AddSurvey, badRequest, serverError, noContent } from './add-survey-protocols'
 
 export class AddSurveyController implements Controller {
   constructor (
@@ -13,7 +11,9 @@ export class AddSurveyController implements Controller {
       if (error) {
         return badRequest(error)
       }
-      await this.addSurvey.add(httpRequest.body)
+      const { question, answers } = httpRequest.body
+      await this.addSurvey.add({ question, answers })
+      return noContent()
     } catch (error) {
       return serverError(error)
     }

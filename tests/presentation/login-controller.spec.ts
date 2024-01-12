@@ -1,6 +1,6 @@
 import { badRequest, ok, serverError, unauthorized } from '@/presentation/helpers'
-import { LoginController } from '@/presentation/controllers/login2/login/login-controller'
-import { type Validation, type Authentication, type HttpRequest, type AuthenticationModel } from '@/presentation/controllers/login2/login/login-controller-protocols'
+import { LoginController } from '@/presentation/controllers/login/login/login-controller'
+import { type Validation, type Authentication, type HttpRequest, type AuthenticationModel } from '@/presentation/controllers/login/login/login-controller-protocols'
 import { MissingParamError } from '@/presentation/errors'
 
 const makeFakeRequest = (): HttpRequest => {
