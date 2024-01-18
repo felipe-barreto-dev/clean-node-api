@@ -1,7 +1,7 @@
 export interface SurveyModel {
   question: string
   answers: Array<{
-    image: string
+    image?: string
     answer: string
   }>
 }
