@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb'
 export class AccountMongoRepository implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository, LoadAccountByTokenRepository {
   async loadByToken (token: string, role?: string): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts')
-    const result = await accountCollection.findOne({ accessToken: token })
+    const result = await accountCollection.findOne({ accessToken: token, role })
     if (!result) {
       return null
     }
@@ -18,7 +18,9 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
       id: result._id.toString(),
       name: result.name,
       email: result.email,
-      password: result.password
+      password: result.password,
+      role: result.role,
+      accessToken: result.accessToken
     }
     return account
   }
