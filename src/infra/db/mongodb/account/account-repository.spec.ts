@@ -65,4 +65,57 @@ describe('Account Mongo Repository', () => {
     expect(resultAfterUpdate).toBeTruthy()
     expect(resultAfterUpdate.accessToken).toBe('any_token')
   })
+
+  test('Should return an account on loadByToken method success', async () => {
+    const sut = new AccountMongoRepository()
+    await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      accessToken: 'any_token',
+      role: 'admin'
+    })
+    const account = await sut.loadByToken('any_token', 'admin')
+    expect(account).toBeTruthy()
+    expect(account.id).toBeTruthy()
+    expect(account.name).toBe('any_name')
+    expect(account.email).toBe('any_email@mail.com')
+    expect(account.password).toBe('any_password')
+  })
+
+  test('Should return null on loadByToken method fails', async () => {
+    const sut = new AccountMongoRepository()
+    const account = await sut.loadByToken('any_token', 'admin')
+    expect(account).toBeFalsy()
+  })
+
+  test('Should return null if loadByToken is called with user without permission', async () => {
+    const sut = new AccountMongoRepository()
+    await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      accessToken: 'any_token',
+      role: 'any_role'
+    })
+    const account = await sut.loadByToken('any_token', 'admin')
+    expect(account).toBeFalsy()
+  })
+
+  test('Should return an account on loadByToken if user is admin', async () => {
+    const sut = new AccountMongoRepository()
+    await accountCollection.insertOne({
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      accessToken: 'any_token',
+      role: 'admin'
+    })
+    const account = await sut.loadByToken('any_token')
+    expect(account).toBeTruthy()
+    expect(account.id).toBeTruthy()
+    expect(account.name).toBe('any_name')
+    expect(account.email).toBe('any_email@mail.com')
+    expect(account.password).toBe('any_password')
+  })
 })
