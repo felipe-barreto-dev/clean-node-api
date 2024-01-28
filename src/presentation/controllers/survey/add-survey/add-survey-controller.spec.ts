@@ -80,7 +80,7 @@ describe('AddSurvey Controller', () => {
     })
   })
 
-  test('Should return 400 if AddSurvey returns an error', async () => {
+  test('Should return 500 if AddSurvey returns an error', async () => {
     const { sut, addSurveyStub } = makeSut()
     jest.spyOn(addSurveyStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
     const httpResponse = await sut.handle(makeFakeRequest())
