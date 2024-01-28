@@ -6,7 +6,7 @@ interface SutTypes {
   loadSurveysStub: LoadSurveys
 }
 
-const makeFakeSurveys = [{
+const makeFakeSurveys: SurveyModel[] = [{
   question: 'Question 1',
   answers: [{
     answer: 'Answer 1'
