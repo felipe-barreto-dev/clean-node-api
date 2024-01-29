@@ -13,7 +13,8 @@ const makeFakeSurveys: SurveyModel[] = [{
   },
   {
     answer: 'Answer 2'
-  }]
+  }],
+  date: new Date()
 },
 {
   question: 'Question 2',
@@ -22,7 +23,8 @@ const makeFakeSurveys: SurveyModel[] = [{
   },
   {
     answer: 'Answer 2'
-  }]
+  }],
+  date: new Date()
 }]
 
 const makeLoadSurveys = (): LoadSurveys => {

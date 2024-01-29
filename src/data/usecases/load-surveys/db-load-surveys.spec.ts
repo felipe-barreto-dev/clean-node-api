@@ -9,7 +9,8 @@ describe('DbLoadSurveys Usecase', () => {
     },
     {
       answer: 'Answer 2'
-    }]
+    }],
+    date: new Date()
   },
   {
     question: 'Question 2',
@@ -18,7 +19,8 @@ describe('DbLoadSurveys Usecase', () => {
     },
     {
       answer: 'Answer 2'
-    }]
+    }],
+    date: new Date()
   }]
 
   const makeLoadSurveysRepository = (): LoadSurveysRepository => {
