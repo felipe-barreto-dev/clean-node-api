@@ -1,6 +1,6 @@
 import { SignUpController } from '@/presentation/controllers/login/signup/signup-controller'
-import { type AddAccountModel, type AddAccount } from '@/domain/usecases/add-account'
-import { type AuthenticationModel, type Authentication } from '@/domain/usecases/authentication'
+import { type AddAccountParams, type AddAccount } from '@/domain/usecases/add-account'
+import { type AuthenticationParams, type Authentication } from '@/domain/usecases/authentication'
 import { type AccountModel } from '@/domain/models/account'
 import { type Validation } from '@/validation/validators/validation'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http-helper'
@@ -27,7 +27,7 @@ const makeFakeRequest = (): HttpRequest => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationModel): Promise<string> {
+    async auth (authentication: AuthenticationParams): Promise<string> {
       return 'any_token'
     }
   }
@@ -45,7 +45,7 @@ const makeValidation = (): Validation => {
 
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
-    async add (account: AddAccountModel): Promise<AccountModel> {
+    async add (account: AddAccountParams): Promise<AccountModel> {
       const fakeAccount = {
         id: 'valid_id',
         name: 'valid_name',

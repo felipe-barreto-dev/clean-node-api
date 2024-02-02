@@ -1,4 +1,4 @@
-import { MissingParamError, type SurveyModel, badRequest, noContent, serverError, type AddSurvey, type HttpRequest, type Validation } from './add-survey-protocols'
+import { MissingParamError, badRequest, noContent, serverError, type AddSurvey, type HttpRequest, type Validation, type AddSurveyParams } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import MockDate from 'mockdate'
 interface SutTypes {
@@ -30,7 +30,7 @@ const makeValidation = (): Validation => {
 
 const makeAddSurvey = (): AddSurvey => {
   class AddSurveyStub implements AddSurvey {
-    async add (survey: SurveyModel): Promise<void> {}
+    async add (survey: AddSurveyParams): Promise<void> {}
   }
   return new AddSurveyStub()
 }

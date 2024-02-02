@@ -1,5 +1,5 @@
 import { DbAddAccount } from './db-add-account'
-import { type AddAccountRepository, type AccountModel, type AddAccountModel, type Hasher, type LoadAccountByEmailRepository } from './db-add-account-protocols'
+import { type AddAccountRepository, type AccountModel, type AddAccountParams, type Hasher, type LoadAccountByEmailRepository } from './db-add-account-protocols'
 
 describe('DbAddAccount Usecase', () => {
   const makeFakeAccount = (): AccountModel => ({
@@ -18,7 +18,7 @@ describe('DbAddAccount Usecase', () => {
   }
   const makeAddAccountRepositoryStub = (): AddAccountRepository => {
     class AddAccountRepositoryStub implements AddAccountRepository {
-      async add (accountData: AddAccountModel): Promise<AccountModel> {
+      async add (accountData: AddAccountParams): Promise<AccountModel> {
         const fakeAccount = {
           id: 'valid_id',
           name: 'valid_name',
