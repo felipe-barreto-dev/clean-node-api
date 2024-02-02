@@ -1,7 +1,7 @@
 import { SignUpController } from '@/presentation/controllers/login/signup/signup-controller'
 import { type AddAccountModel, type AddAccount } from '@/domain/usecases/add-account'
 import { type AuthenticationModel, type Authentication } from '@/domain/usecases/authentication'
-import { type AccountModel } from '@/domain/models/account-model'
+import { type AccountModel } from '@/domain/models/account'
 import { type Validation } from '@/validation/validators/validation'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { EmailInUseError, MissingParamError } from '@/presentation/errors'

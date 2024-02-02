@@ -2,7 +2,7 @@ import { AccessDeniedError } from '@/presentation/errors/access-denied-error'
 import { forbidden, ok, serverError } from '@/presentation/helpers'
 import { type HttpRequest } from '@/presentation/protocols'
 import { AuthMiddleware } from './auth-middleware'
-import { type AccountModel } from '@/domain/models/account-model'
+import { type AccountModel } from '@/domain/models/account'
 import { type LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
 
 const makeLoadAccountByToken = (): LoadAccountByToken => {
