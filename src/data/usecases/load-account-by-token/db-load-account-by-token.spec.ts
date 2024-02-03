@@ -1,15 +1,9 @@
-import { throwError } from '@/domain/test'
+import { mockAccountModel, throwError } from '@/domain/test'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 import { type AccountModel, type Decrypter } from './db-load-account-by-token-protocols'
 import { type LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
 
 describe('DbLoadAccountByToken Usecase', () => {
-  const mockAccountModel = (): AccountModel => ({
-    email: 'any_email@mail.com',
-    id: 'any_id',
-    name: 'any_name',
-    password: 'any_password'
-  })
   const makeDecrypterStub = (): Decrypter => {
     class DecrypterStub implements Decrypter {
       async decrypt (value: string): Promise<string> {

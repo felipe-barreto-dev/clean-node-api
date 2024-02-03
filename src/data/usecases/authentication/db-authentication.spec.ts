@@ -1,14 +1,7 @@
-import { throwError } from '@/domain/test'
+import { mockAccountModel, throwError } from '@/domain/test'
 import { type AccountModel } from '../add-account/db-add-account-protocols'
 import { DbAuthentication } from './db-authentication'
 import { type AuthenticationParams, type HashComparer, type LoadAccountByEmailRepository, type Encrypter, type UpdateAccessTokenRepository } from './db-authentication-protocols'
-
-const mockAccountModel = (): AccountModel => ({
-  email: 'any_email@mail.com',
-  id: 'any_id',
-  name: 'any_name',
-  password: 'hashed_password'
-})
 
 const makeFakeAuthentication = (): AuthenticationParams => ({
   email: 'any_email@mail.com',
@@ -100,7 +93,7 @@ describe('DbAuthentication UseCase', () => {
     const { sut, hashComparerStub } = makeSut()
     const compareSpy = jest.spyOn(hashComparerStub, 'compare')
     await sut.auth(makeFakeAuthentication())
-    expect(compareSpy).toHaveBeenCalledWith('any_password', 'hashed_password')
+    expect(compareSpy).toHaveBeenCalledWith('any_password', 'any_password')
   })
 
   test('Should throw if HashComparer throws', async () => {
