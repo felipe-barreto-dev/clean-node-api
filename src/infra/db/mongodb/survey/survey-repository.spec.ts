@@ -32,4 +32,34 @@ describe('Survey Mongo Repository', () => {
     const survey = await surveyCollection.findOne({ question: 'any_question' })
     expect(survey).toBeTruthy()
   })
+
+  test('Should return all surveys on loadAll method success', async () => {
+    const sut = new SurveyMongoRepository()
+    await sut.add({
+      question: 'question_1',
+      answers: [{
+        image: 'any_image',
+        answer: 'any_answer'
+      },
+      {
+        answer: 'answer'
+      }],
+      date: new Date()
+    })
+    await sut.add({
+      question: 'question_2',
+      answers: [{
+        image: 'any_image',
+        answer: 'any_answer'
+      },
+      {
+        answer: 'answer'
+      }],
+      date: new Date()
+    })
+    const surveys = await sut.loadAll()
+    expect(surveys.length).toBe(2)
+    expect(surveys[0].question).toBe('question_1')
+    expect(surveys[1].question).toBe('question_2')
+  })
 })
