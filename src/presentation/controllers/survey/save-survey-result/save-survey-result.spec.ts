@@ -3,6 +3,7 @@ import { SaveSurveyResultController } from './save-survey-result-controller'
 import { type HttpRequest, ok, serverError } from '../add-survey/add-survey-protocols'
 import { type SurveyResultModel } from '@/domain/models'
 import MockDate from 'mockdate'
+import { throwError } from '@/domain/test'
 
 interface SutTypes {
   sut: SaveSurveyResultController
@@ -90,7 +91,7 @@ describe('SaveSurveyResult Controller', () => {
 
   test('Should return 500 if SaveSurveyResult returns an error', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
-    jest.spyOn(saveSurveyResultStub, 'save').mockReturnValueOnce(new Promise((resolve, reject) => { reject(new Error()) }))
+    jest.spyOn(saveSurveyResultStub, 'save').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeFakeRequest)
     expect(httpResponse).toEqual(serverError(new Error()))
   })

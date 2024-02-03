@@ -6,6 +6,7 @@ import { type Validation } from '@/validation/validators/validation'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers/http-helper'
 import { EmailInUseError, MissingParamError } from '@/presentation/errors'
 import { type HttpRequest } from '@/presentation/protocols/http'
+import { throwError } from '@/domain/test'
 
 interface SutTypes {
   sut: SignUpController
@@ -86,9 +87,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 500 if AddAccount throws', async () => {
     const { sut, addAccountStub } = makeSut()
-    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(async () => {
-      return new Promise((resolve, reject) => { reject(new Error()) })
-    })
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
@@ -128,9 +127,7 @@ describe('SignUp Controller', () => {
 
   test('Should return 500 if Authentication throws', async () => {
     const { sut, authenticationStub } = makeSut()
-    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(async () => {
-      return new Promise((resolve, reject) => { reject(new Error()) })
-    })
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(throwError)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse.statusCode).toBe(500)
   })
