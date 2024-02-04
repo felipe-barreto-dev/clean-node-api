@@ -5,12 +5,14 @@ import MockDate from 'mockdate'
 import { faker } from '@faker-js/faker'
 import { LoadSurveyResultController } from './load-survey-result-controller'
 import { type HttpRequest } from '../add-survey/add-survey-protocols'
-import { mockLoadSurveyResultResult, throwError } from '@/domain/test'
+import { mockSurveyResultModel, throwError } from '@/domain/test'
 import { type CheckSurveyById, type LoadSurveyResult } from '@/domain/usecases'
 
 const mockRequest = (): HttpRequest => ({
   body: {
-    accountId: faker.database.mongodbObjectId(),
+    accountId: faker.database.mongodbObjectId()
+  },
+  params: {
     surveyId: faker.database.mongodbObjectId()
   }
 })
@@ -33,7 +35,7 @@ const makeCheckSurveyById = (): CheckSurveyById => {
 const makeLoadSurveyResult = (): LoadSurveyResult => {
   class LoadSurveyResultStub implements LoadSurveyResult {
     async load (surveyId: string, accountId: string): Promise<LoadSurveyResult.Result> {
-      return mockLoadSurveyResultResult()
+      return mockSurveyResultModel()
     }
   }
   return new LoadSurveyResultStub()
@@ -64,7 +66,7 @@ describe('LoadSurveyResult Controller', () => {
     const checkByIdSpy = jest.spyOn(checkSurveyByIdStub, 'checkById')
     const request = mockRequest()
     await sut.handle(request)
-    expect(checkByIdSpy).toHaveBeenCalledWith(request.body.surveyId)
+    expect(checkByIdSpy).toHaveBeenCalledWith(request.params.surveyId)
   })
 
   test('Should return 403 if CheckSurveyById returns false', async () => {
@@ -86,7 +88,7 @@ describe('LoadSurveyResult Controller', () => {
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     const request = mockRequest()
     await sut.handle(request)
-    expect(loadSpy).toHaveBeenCalledWith(request.body.surveyId, request.body.accountId)
+    expect(loadSpy).toHaveBeenCalledWith(request.params.surveyId, request.body.accountId)
   })
 
   test('Should return 500 if LoadSurveyResult throws', async () => {
@@ -98,7 +100,7 @@ describe('LoadSurveyResult Controller', () => {
 
   test('Should return 200 on success', async () => {
     const { sut, loadSurveyResultStub } = makeSut()
-    const mockedResult = mockLoadSurveyResultResult()
+    const mockedResult = mockSurveyResultModel()
     jest.spyOn(loadSurveyResultStub, 'load').mockReturnValueOnce(Promise.resolve(mockedResult))
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(ok(mockedResult))

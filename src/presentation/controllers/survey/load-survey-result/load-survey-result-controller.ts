@@ -11,7 +11,8 @@ export class LoadSurveyResultController implements Controller {
 
   async handle (request: HttpRequest): Promise<HttpResponse> {
     try {
-      const { surveyId, accountId } = request.body
+      const { accountId } = request.body
+      const { surveyId } = request.params
       const exists = await this.checkSurveyById.checkById(surveyId)
       if (!exists) {
         return forbidden(new InvalidParamError('surveyId'))
