@@ -4,6 +4,7 @@ import { type LoadSurveysRepository, type SurveyModel } from './db-load-surveys-
 
 describe('DbLoadSurveys Usecase', () => {
   const makeFakeSurveys: SurveyModel[] = [{
+    id: null,
     question: 'Question 1',
     answers: [{
       answer: 'Answer 1'
@@ -14,6 +15,7 @@ describe('DbLoadSurveys Usecase', () => {
     date: new Date()
   },
   {
+    id: null,
     question: 'Question 2',
     answers: [{
       answer: 'Answer 1'

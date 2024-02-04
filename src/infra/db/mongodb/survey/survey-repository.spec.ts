@@ -19,6 +19,7 @@ describe('Survey Mongo Repository', () => {
   test('Should return an survey on add method success', async () => {
     const sut = new SurveyMongoRepository()
     await sut.add({
+      id: null,
       question: 'any_question',
       answers: [{
         image: 'any_image',
@@ -36,6 +37,7 @@ describe('Survey Mongo Repository', () => {
   test('Should return all surveys on loadAll method success', async () => {
     const sut = new SurveyMongoRepository()
     await sut.add({
+      id: null,
       question: 'question_1',
       answers: [{
         image: 'any_image',
@@ -47,6 +49,7 @@ describe('Survey Mongo Repository', () => {
       date: new Date()
     })
     await sut.add({
+      id: null,
       question: 'question_2',
       answers: [{
         image: 'any_image',

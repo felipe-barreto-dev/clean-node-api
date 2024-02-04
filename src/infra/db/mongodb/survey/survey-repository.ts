@@ -13,6 +13,7 @@ export class SurveyMongoRepository implements AddSurveyRepository, LoadSurveysRe
     const surveyCollection = await MongoHelper.getCollection('surveys')
     const surveysData = await surveyCollection.find().toArray()
     const surveys: SurveyModel[] = surveysData.map(surveyData => ({
+      id: surveyData._id.toString(),
       question: surveyData.question,
       answers: surveyData.answers.map((answerData: { image: any, answer: any }) => ({
         image: answerData.image,
