@@ -4,7 +4,7 @@ import { throwError } from '@/domain/test'
 
 jest.mock('jsonwebtoken', () => ({
   async sign (): Promise<string> {
-    return new Promise((resolve) => { resolve('any_token') })
+    return Promise.resolve('any_token')
   },
   verify (): string {
     return 'decrypted_token'

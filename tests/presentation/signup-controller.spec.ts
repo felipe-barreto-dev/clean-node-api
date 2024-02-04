@@ -53,7 +53,7 @@ const makeAddAccount = (): AddAccount => {
         email: 'valid_email@email.com',
         password: 'hashed_password'
       }
-      return new Promise(resolve => { resolve(fakeAccount) })
+      return Promise.resolve(fakeAccount)
     }
   }
   return new AddAccountStub()

@@ -43,7 +43,7 @@ describe('DbLoadAnswersBySurvey', () => {
 
   test('Should return empty array if LoadAnswersBySurveyRepository returns []', async () => {
     const { sut, loadAnswersBySurveyRepositoryStub } = makeSut()
-    jest.spyOn(loadAnswersBySurveyRepositoryStub, 'loadAnswers').mockReturnValueOnce(new Promise(resolve => { resolve([]) }))
+    jest.spyOn(loadAnswersBySurveyRepositoryStub, 'loadAnswers').mockReturnValueOnce(Promise.resolve([]))
     const answers = await sut.loadAnswers(surveyId)
     expect(answers).toEqual([])
   })

@@ -8,10 +8,10 @@ interface SutTypes {
 
 jest.mock('bcrypt', () => ({
   async hash (): Promise<string> {
-    return new Promise((resolve) => { resolve('hash') })
+    return Promise.resolve('hash')
   },
   async compare (): Promise<boolean> {
-    return new Promise((resolve) => { resolve(true) })
+    return Promise.resolve(true)
   }
 }))
 
@@ -64,7 +64,7 @@ describe('BCrypt Adapter', () => {
 
     test('Should return false on compare method fail', async () => {
       const { sut } = makeSut()
-      jest.spyOn<any, string>(bcrypt, 'compare').mockReturnValueOnce(new Promise(resolve => { resolve(false) }))
+      jest.spyOn<any, string>(bcrypt, 'compare').mockReturnValueOnce(Promise.resolve(false))
       const isValid = await sut.compare('any_value', 'any_hash')
       expect(isValid).toBe(false)
     })
