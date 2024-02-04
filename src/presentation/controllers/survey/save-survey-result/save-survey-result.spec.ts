@@ -15,10 +15,10 @@ const makeLoadAnswersBySurveyResult = ['Answer 1', 'Answer 2']
 
 const makeFakeRequest: HttpRequest = {
   body: {
-    surveyId: 'survey_id',
-    accountId: 'account_id',
-    answer: 'Answer 1',
-    date: new Date()
+    answer: 'Answer 1'
+  },
+  params: {
+    surveyId: 'survey_id'
   }
 }
 
