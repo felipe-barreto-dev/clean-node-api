@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
-import { type LoadSurveyResult } from '../usecases'
+import { type SurveyResultModel } from '../models'
 
-export const mockLoadSurveyResultResult = (): LoadSurveyResult.Result => ({
+export const mockSurveyResultModel = (): SurveyResultModel => ({
   question: faker.word.words(),
   answers: [{
     image: faker.image.url(),
