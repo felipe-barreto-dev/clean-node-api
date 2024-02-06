@@ -1,40 +1,51 @@
 import { mockSurveyModel } from '@/domain/test'
-import { type LoadAnswersBySurveyRepository, type AddSurveyRepository, type CheckSurveyByIdRepository } from '../protocols/db/survey'
+import { type LoadAnswersBySurveyRepository, type AddSurveyRepository, type CheckSurveyByIdRepository, type LoadSurveysRepository } from '../protocols/db/survey'
 import { type SurveyModel } from '../usecases/load-surveys/db-load-surveys-protocols'
 import { type LoadSurveyByIdRepository } from '../protocols/db/survey/load-survey-by-id-repository'
 
-export const mockAddSurveyRepository = (): AddSurveyRepository => {
-  class AddSurveyRepositoryStub implements AddSurveyRepository {
-    async add (survey: SurveyModel): Promise<void> {}
+export class AddSurveyRepositorySpy implements AddSurveyRepository {
+  survey: SurveyModel
+  async add (survey: SurveyModel): Promise<void> {
+    this.survey = survey
   }
-  return new AddSurveyRepositoryStub()
 }
 
-export const mockLoadAnswersBySurveyRepository = (): LoadAnswersBySurveyRepository => {
-  class LoadAnswersBySurveyRepositoryStub implements LoadAnswersBySurveyRepository {
-    async loadAnswers (surveyId: string): Promise<LoadAnswersBySurveyRepository.Result> {
-      return mockLoadAnswersBySurveyResult
-    }
+export class LoadAnswersBySurveyRepositorySpy implements LoadAnswersBySurveyRepository {
+  surveyId: string
+  result = mockLoadAnswersBySurveyResult
+  async loadAnswers (surveyId: string): Promise<LoadAnswersBySurveyRepository.Result> {
+    this.surveyId = surveyId
+    return Promise.resolve(this.result)
   }
-  return new LoadAnswersBySurveyRepositoryStub()
 }
 
-export const mockLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
-  class LoadSurveyByIdRepositoryStub implements LoadSurveyByIdRepository {
-    async loadById (surveyId: string): Promise<SurveyModel> {
-      return mockSurveyModel()
-    }
+export class LoadSurveyByIdRepositorySpy implements LoadSurveyByIdRepository {
+  surveyId: string
+  result = mockSurveyModel()
+  async loadById (surveyId: string): Promise<SurveyModel> {
+    this.surveyId = surveyId
+    return Promise.resolve(this.result)
   }
-  return new LoadSurveyByIdRepositoryStub()
 }
 
-export const mockCheckSurveyByIdRepository = (): CheckSurveyByIdRepository => {
-  class CheckSurveyByIdRepositoryStub implements CheckSurveyByIdRepository {
-    async checkById (surveyId: string): Promise<boolean> {
-      return true
-    }
+export class CheckSurveyByIdRepositorySpy implements CheckSurveyByIdRepository {
+  surveyId: string
+  result = true
+  async checkById (surveyId: string): Promise<boolean> {
+    this.surveyId = surveyId
+    return Promise.resolve(this.result)
   }
-  return new CheckSurveyByIdRepositoryStub()
+}
+
+export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
+  result = [
+    mockSurveyModel(),
+    mockSurveyModel()
+  ]
+
+  async loadAll (): Promise<SurveyModel[]> {
+    return Promise.resolve(this.result)
+  }
 }
 
 export const mockLoadAnswersBySurveyResult = ['Answer 1', 'Answer 2']

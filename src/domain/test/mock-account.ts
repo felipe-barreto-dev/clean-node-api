@@ -3,10 +3,10 @@ import { type AccountModel } from '../models'
 import { type AuthenticationParams, type AddAccountParams } from '../usecases'
 
 export const mockAccountModel = (): AccountModel => ({
-  email: 'any_email@mail.com',
-  id: 'any_id',
-  name: 'any_name',
-  password: 'any_password'
+  email: faker.internet.email(),
+  id: faker.database.mongodbObjectId(),
+  name: faker.person.fullName(),
+  password: faker.internet.password()
 })
 
 export const mockAddAccountParams = (): AddAccountParams => ({
@@ -15,7 +15,7 @@ export const mockAddAccountParams = (): AddAccountParams => ({
   password: faker.internet.password()
 })
 
-export const mockFakeAuthentication = (): AuthenticationParams => ({
-  email: 'any_email@mail.com',
-  password: 'any_password'
+export const mockAuthenticationParams = (): AuthenticationParams => ({
+  email: faker.internet.email(),
+  password: faker.internet.password()
 })

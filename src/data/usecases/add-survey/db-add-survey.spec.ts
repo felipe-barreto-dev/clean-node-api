@@ -1,6 +1,6 @@
-import { mockAddSurveyRepository } from '@/data/test/mock-db-survey'
+import { AddSurveyRepositorySpy } from '@/data/test/mock-db-survey'
 import { DbAddSurvey } from './db-add-survey'
-import { type AddSurveyRepository, type SurveyModel } from './db-add-survey-protocols'
+import { type SurveyModel } from './db-add-survey-protocols'
 import MockDate from 'mockdate'
 
 const makeFakeSurvey = (): SurveyModel => ({
@@ -13,15 +13,15 @@ const makeFakeSurvey = (): SurveyModel => ({
 })
 interface SutTypes {
   sut: DbAddSurvey
-  addSurveyRepositoryStub: AddSurveyRepository
+  addSurveyRepositorySpy: AddSurveyRepositorySpy
 }
 
 const makeSut = (): SutTypes => {
-  const addSurveyRepositoryStub = mockAddSurveyRepository()
-  const sut = new DbAddSurvey(addSurveyRepositoryStub)
+  const addSurveyRepositorySpy = new AddSurveyRepositorySpy()
+  const sut = new DbAddSurvey(addSurveyRepositorySpy)
   return {
     sut,
-    addSurveyRepositoryStub
+    addSurveyRepositorySpy
   }
 }
 
@@ -34,8 +34,8 @@ describe('DbAddSurvey Usecase', () => {
   })
 
   test('Should call Hasher with correct password', async () => {
-    const { sut, addSurveyRepositoryStub } = makeSut()
-    const addSpy = jest.spyOn(addSurveyRepositoryStub, 'add')
+    const { sut, addSurveyRepositorySpy } = makeSut()
+    const addSpy = jest.spyOn(addSurveyRepositorySpy, 'add')
     await sut.add(makeFakeSurvey())
     expect(addSpy).toHaveBeenCalledWith(makeFakeSurvey())
   })
