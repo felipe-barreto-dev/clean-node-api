@@ -4,17 +4,12 @@ import { InvalidParamError } from '@/presentation/errors'
 import MockDate from 'mockdate'
 import { faker } from '@faker-js/faker'
 import { LoadSurveyResultController } from './load-survey-result-controller'
-import { type HttpRequest } from '../add-survey/add-survey-protocols'
 import { mockSurveyResultModel, throwError } from '@/domain/test'
 import { type CheckSurveyById, type LoadSurveyResult } from '@/domain/usecases'
 
-const mockRequest = (): HttpRequest => ({
-  body: {
-    accountId: faker.database.mongodbObjectId()
-  },
-  params: {
-    surveyId: faker.database.mongodbObjectId()
-  }
+const mockRequest = (): LoadSurveyResultController.Request => ({
+  accountId: faker.database.mongodbObjectId(),
+  surveyId: faker.database.mongodbObjectId()
 })
 
 type SutTypes = {
@@ -66,7 +61,7 @@ describe('LoadSurveyResult Controller', () => {
     const checkByIdSpy = jest.spyOn(checkSurveyByIdStub, 'checkById')
     const request = mockRequest()
     await sut.handle(request)
-    expect(checkByIdSpy).toHaveBeenCalledWith(request.params.surveyId)
+    expect(checkByIdSpy).toHaveBeenCalledWith(request.surveyId)
   })
 
   test('Should return 403 if CheckSurveyById returns false', async () => {
@@ -88,7 +83,7 @@ describe('LoadSurveyResult Controller', () => {
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load')
     const request = mockRequest()
     await sut.handle(request)
-    expect(loadSpy).toHaveBeenCalledWith(request.params.surveyId, request.body.accountId)
+    expect(loadSpy).toHaveBeenCalledWith(request.surveyId, request.accountId)
   })
 
   test('Should return 500 if LoadSurveyResult throws', async () => {

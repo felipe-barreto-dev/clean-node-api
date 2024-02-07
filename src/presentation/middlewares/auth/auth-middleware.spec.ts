@@ -1,6 +1,5 @@
 import { AccessDeniedError } from '@/presentation/errors/access-denied-error'
 import { forbidden, ok, serverError } from '@/presentation/helpers'
-import { type HttpRequest } from '@/presentation/protocols'
 import { AuthMiddleware } from './auth-middleware'
 import { type AccountModel } from '@/domain/models/account'
 import { type LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
@@ -33,10 +32,8 @@ const makeSut = (role?: string): SutTypes => {
   }
 }
 
-const makeFakeRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': 'any_token'
-  }
+const mockRequest = (): any => ({
+  accessToken: 'any_token'
 })
 
 describe('Auth Middleware', () => {
@@ -50,27 +47,27 @@ describe('Auth Middleware', () => {
     const role = 'any_role'
     const { sut, loadAccountByTokenStub } = makeSut(role)
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
-    await sut.handle(makeFakeRequest())
+    await sut.handle(mockRequest())
     expect(loadSpy).toHaveBeenCalledWith('any_token', role)
   })
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     jest.spyOn(loadAccountByTokenStub, 'load').mockReturnValueOnce(Promise.resolve(null))
-    const response = await sut.handle(makeFakeRequest())
+    const response = await sut.handle(mockRequest())
     expect(response).toEqual(forbidden(new AccessDeniedError()))
   })
 
   test('Should return 200 if LoadAccountByToken returns an account', async () => {
     const { sut } = makeSut()
-    const response = await sut.handle(makeFakeRequest())
+    const response = await sut.handle(mockRequest())
     expect(response).toEqual(ok({ accountId: 'any_id' }))
   })
 
   test('Should return 500 if LoadAccountByToken throws', async () => {
     const { sut, loadAccountByTokenStub } = makeSut()
     jest.spyOn(loadAccountByTokenStub, 'load').mockImplementationOnce(throwError)
-    const response = await sut.handle(makeFakeRequest())
+    const response = await sut.handle(mockRequest())
     expect(response).toEqual(serverError(new Error()))
   })
 })

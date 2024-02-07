@@ -1,21 +1,32 @@
-import { type HttpRequest, type HttpResponse, type Controller, type Validation, type AddSurvey, badRequest, serverError, noContent } from './add-survey-protocols'
+import { type HttpResponse, type Controller, type Validation, type AddSurvey, badRequest, serverError, noContent, type SurveyAnswerModel } from './add-survey-protocols'
 
 export class AddSurveyController implements Controller {
   constructor (
     private readonly validation: Validation,
     private readonly addSurvey: AddSurvey) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (request: AddSurveyController.Request): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body)
+      const error = this.validation.validate(request)
       if (error) {
         return badRequest(error)
       }
-      const { question, answers, date } = httpRequest.body
-      await this.addSurvey.add({ question, answers, date })
+      const { question, answers } = request
+      await this.addSurvey.add({
+        question,
+        answers,
+        date: new Date()
+      })
       return noContent()
     } catch (error) {
       return serverError(error)
     }
+  }
+}
+
+export namespace AddSurveyController {
+  export type Request = {
+    question: string
+    answers: SurveyAnswerModel
   }
 }

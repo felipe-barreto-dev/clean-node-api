@@ -1,6 +1,6 @@
 import { type LoadAnswersBySurvey, type SaveSurveyResult } from '@/domain/usecases'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { type HttpRequest, ok, serverError } from '../add-survey/add-survey-protocols'
+import { ok, serverError } from '../add-survey/add-survey-protocols'
 import { type SurveyResultModel } from '@/domain/models'
 import MockDate from 'mockdate'
 import { throwError } from '@/domain/test'
@@ -13,14 +13,11 @@ interface SutTypes {
 
 const makeLoadAnswersBySurveyResult = ['Answer 1', 'Answer 2']
 
-const makeFakeRequest: HttpRequest = {
-  body: {
-    answer: 'Answer 1'
-  },
-  params: {
-    surveyId: 'survey_id'
-  }
-}
+const mockRequest = (): SaveSurveyResultController.Request => ({
+  answer: 'Answer 1',
+  surveyId: 'survey_id',
+  accountId: 'account_id'
+})
 
 const makeFakeSurveyResultModel: SurveyResultModel = {
   question: 'Question 1',
@@ -83,22 +80,24 @@ describe('SaveSurveyResult Controller', () => {
   test('Should call SaveSurveyResult', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
     const saveSpy = jest.spyOn(saveSurveyResultStub, 'save')
-    const httpRequest = makeFakeRequest
-    httpRequest.body.date = new Date()
-    await sut.handle(httpRequest)
-    expect(saveSpy).toHaveBeenCalledWith(httpRequest.body)
+    const request = mockRequest()
+    await sut.handle(request)
+    expect(saveSpy).toHaveBeenCalledWith({
+      ...request,
+      date: new Date()
+    })
   })
 
   test('Should return 500 if SaveSurveyResult returns an error', async () => {
     const { sut, saveSurveyResultStub } = makeSut()
     jest.spyOn(saveSurveyResultStub, 'save').mockImplementationOnce(throwError)
-    const httpResponse = await sut.handle(makeFakeRequest)
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   test('Should return 200 on success', async () => {
     const { sut } = makeSut()
-    const httpResponse = await sut.handle(makeFakeRequest)
+    const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse).toEqual(ok(makeFakeSurveyResultModel))
   })
 })
