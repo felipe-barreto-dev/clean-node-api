@@ -1,4 +1,4 @@
-import { type AccountModel } from '../../../usecases/add-account/db-add-account-protocols'
+import { type AccountModel } from '@/domain/models'
 
 export interface LoadAccountByEmailRepository {
   loadByEmail: (email: string) => Promise<AccountModel>

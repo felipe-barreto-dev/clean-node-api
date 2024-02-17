@@ -1,8 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { type Hasher } from '../protocols/criptography/hasher'
-import { type HashComparer } from '../protocols/criptography/hash-comparer'
-import { type Encrypter } from '../protocols/criptography/token-generator'
-import { type Decrypter } from '../protocols/criptography/decrypter'
+import { type Decrypter, type Encrypter, type HashComparer, type Hasher } from '@/data/protocols'
 export class HasherSpy implements Hasher {
   digest = faker.string.uuid()
   plaintext: string

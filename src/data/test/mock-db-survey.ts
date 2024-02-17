@@ -1,7 +1,6 @@
 import { mockSurveyModel } from '@/domain/test'
-import { type LoadAnswersBySurveyRepository, type AddSurveyRepository, type CheckSurveyByIdRepository, type LoadSurveysRepository } from '../protocols/db/survey'
-import { type SurveyModel } from '../usecases/load-surveys/db-load-surveys-protocols'
-import { type LoadSurveyByIdRepository } from '../protocols/db/survey/load-survey-by-id-repository'
+import { type LoadAnswersBySurveyRepository, type AddSurveyRepository, type CheckSurveyByIdRepository, type LoadSurveysRepository, type LoadSurveyByIdRepository } from '@/data/protocols'
+import { type SurveyModel } from '@/domain/models'
 
 export class AddSurveyRepositorySpy implements AddSurveyRepository {
   survey: SurveyModel

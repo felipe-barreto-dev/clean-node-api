@@ -1,7 +1,7 @@
 import { mockAccountModel } from '@/domain/test'
-import { type LoadAccountByEmailRepository, type AccountModel, type AddAccountParams, type AddAccountRepository } from '../usecases/add-account/db-add-account-protocols'
-import { type LoadAccountByTokenRepository } from '../protocols/db/account/load-account-by-token-repository'
-import { type UpdateAccessTokenRepository } from '../usecases/authentication/db-authentication-protocols'
+import { type AddAccountRepository, type LoadAccountByEmailRepository, type UpdateAccessTokenRepository, type LoadAccountByTokenRepository } from '@/data/protocols'
+import { type AddAccountParams } from '@/domain/usecases'
+import { type AccountModel } from '@/domain/models'
 
 export class AddAccountRepositorySpy implements AddAccountRepository {
   addAccountParams: AddAccountParams
