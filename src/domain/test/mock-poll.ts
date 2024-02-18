@@ -1,6 +1,6 @@
 import { type PollModel } from '@/domain/models'
-import { type AddPollParams } from '@/domain/usecases'
 import { faker } from '@faker-js/faker'
+import { type AddPoll } from '../usecases'
 
 export const mockPollModel = (): PollModel => {
   return {
@@ -21,7 +21,7 @@ export const mockPollModels = (): PollModel[] => [
   mockPollModel()
 ]
 
-export const mockAddPollParams = (): AddPollParams => ({
+export const mockAddPollParams = (): AddPoll.Params => ({
   question: faker.word.words(),
   answers: [{
     image: faker.image.url(),

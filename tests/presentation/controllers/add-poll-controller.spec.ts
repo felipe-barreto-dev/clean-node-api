@@ -1,7 +1,7 @@
 import MockDate from 'mockdate'
 import { throwError } from '@/domain/test'
 import { type Validation } from '@/presentation/protocols'
-import { type AddPoll, type AddPollParams } from '@/domain/usecases'
+import { type AddPoll } from '@/domain/usecases'
 import { badRequest, noContent, serverError } from '@/presentation/helpers'
 import { MissingParamError } from '@/presentation/errors'
 import { AddPollController } from '@/presentation/controllers'
@@ -30,7 +30,7 @@ const makeValidation = (): Validation => {
 
 const makeAddPoll = (): AddPoll => {
   class AddPollStub implements AddPoll {
-    async add (poll: AddPollParams): Promise<void> {}
+    async add (poll: AddPoll.Params): Promise<void> {}
   }
   return new AddPollStub()
 }
