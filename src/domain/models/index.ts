@@ -1,3 +1,3 @@
-export * from './survey-result'
-export * from './survey'
+export * from './poll-result'
+export * from './poll'
 export * from './account'
