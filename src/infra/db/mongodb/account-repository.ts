@@ -38,7 +38,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
       id: createdAccount._id.toString(),
       name: createdAccount.name,
       email: createdAccount.email,
-      password: createdAccount.password
+      password: createdAccount.password,
+      role: createdAccount.role
     }
     return account
   }
@@ -53,7 +54,8 @@ export class AccountMongoRepository implements AddAccountRepository, LoadAccount
       id: result._id.toString(),
       name: result.name,
       email: result.email,
-      password: result.password
+      password: result.password,
+      role: result.role
     }
     return account
   }

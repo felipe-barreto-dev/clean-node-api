@@ -12,7 +12,8 @@ const makeLoadAccountByToken = (): LoadAccountByToken => {
         email: 'any_email',
         id: 'any_id',
         name: 'any_name',
-        password: 'any_password'
+        password: 'any_password',
+        role: 'admin'
       }
     }
   }

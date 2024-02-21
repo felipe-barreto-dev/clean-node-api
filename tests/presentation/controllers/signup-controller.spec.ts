@@ -2,7 +2,7 @@ import { SignUpController } from '@/presentation/controllers'
 import { type Validation } from '@/presentation/protocols'
 import { badRequest, forbidden, serverError } from '@/presentation/helpers'
 import { EmailInUseError, MissingParamError } from '@/presentation/errors'
-import { type AddAccountParams, type AddAccount, type AuthenticationParams, type Authentication } from '@/domain/usecases'
+import { type AddAccountParams, type AddAccount, type Authentication } from '@/domain/usecases'
 import { type AccountModel } from '@/domain/models'
 import { throwError } from '@/domain/test'
 
@@ -22,8 +22,11 @@ const mockRequest = (): SignUpController.Request => ({
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return 'any_token'
+    async auth (authentication: Authentication.Params): Promise<Authentication.Result> {
+      return {
+        accessToken: 'any_token',
+        name: 'valid_name'
+      }
     }
   }
   return new AuthenticationStub()
@@ -45,7 +48,8 @@ const makeAddAccount = (): AddAccount => {
         id: 'valid_id',
         name: 'valid_name',
         email: 'valid_email@email.com',
-        password: 'hashed_password'
+        password: 'hashed_password',
+        role: 'admin'
       }
       return Promise.resolve(fakeAccount)
     }
@@ -91,7 +95,8 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(mockRequest())
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual({
-      accessToken: 'any_token'
+      accessToken: 'any_token',
+      name: 'valid_name'
     })
   })
 

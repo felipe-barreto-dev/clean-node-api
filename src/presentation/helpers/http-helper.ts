@@ -8,7 +8,7 @@ export const badRequest = (error: Error): HttpResponse => ({
 
 export const forbidden = (error: Error): HttpResponse => ({
   statusCode: 403,
-  body: new ServerError(error.stack)
+  body: error
 })
 
 export const serverError = (error: Error): HttpResponse => ({

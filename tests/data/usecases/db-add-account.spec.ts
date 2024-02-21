@@ -45,7 +45,8 @@ describe('DbAddAccount Usecase', () => {
     expect(addAccountRepositorySpy.addAccountParams).toEqual({
       name: accountData.name,
       email: accountData.email,
-      password: hasherSpy.digest
+      password: hasherSpy.digest,
+      role: accountData.role
     })
   })
 
@@ -55,7 +56,8 @@ describe('DbAddAccount Usecase', () => {
     const accountData = {
       name: 'valid_name',
       email: 'valid_email',
-      password: 'valid_password'
+      password: 'valid_password',
+      role: 'admin'
     }
     const promise = sut.add(accountData)
     await expect(promise).rejects.toThrow()

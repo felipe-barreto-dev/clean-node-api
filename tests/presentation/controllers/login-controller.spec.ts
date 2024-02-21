@@ -2,7 +2,7 @@ import { badRequest, ok, serverError, unauthorized } from '@/presentation/helper
 import { LoginController } from '@/presentation/controllers'
 import { MissingParamError } from '@/presentation/errors'
 import { throwError } from '@/domain/test'
-import { type Authentication, type AuthenticationParams } from '@/domain/usecases'
+import { type Authentication } from '@/domain/usecases'
 import { type Validation } from '@/presentation/protocols'
 
 const mockRequest = (): LoginController.Request => ({
@@ -12,8 +12,11 @@ const mockRequest = (): LoginController.Request => ({
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return 'any_token'
+    async auth (authentication: Authentication.Params): Promise<Authentication.Result> {
+      return {
+        accessToken: 'any_token',
+        name: 'any_name'
+      }
     }
   }
   return new AuthenticationStub()
@@ -75,7 +78,7 @@ describe('Login Controller', () => {
     const { sut } = makeSut()
     const request = mockRequest()
     const httpResponse = await sut.handle(request)
-    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token', name: 'any_name' }))
   })
 
   test('Should call Validation with correct value', async () => {
