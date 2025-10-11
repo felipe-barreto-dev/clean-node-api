@@ -47,7 +47,7 @@ export default {
     }
   ],
   paths: {
-    '/signup': {
+    '/api/signup': {
       post: {
         tags: ['Authentication'],
         summary: 'Create a new user account',
@@ -144,7 +144,7 @@ export default {
         }
       }
     },
-    '/login': {
+    '/api/login': {
       post: {
         tags: ['Authentication'],
         summary: 'Authenticate user',
@@ -221,7 +221,7 @@ export default {
         }
       }
     },
-    '/polls': {
+    '/api/polls': {
       post: {
         tags: ['Polls'],
         summary: 'Create a new poll',
@@ -341,7 +341,7 @@ export default {
         }
       }
     },
-    '/polls/{pollId}/results': {
+    '/api/polls/{pollId}/results': {
       put: {
         tags: ['Poll Results'],
         summary: 'Vote on a poll',
