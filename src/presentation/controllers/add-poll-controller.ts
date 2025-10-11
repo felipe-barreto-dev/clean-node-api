@@ -1,7 +1,7 @@
 import { type AddPoll } from '@/domain/usecases'
 import { type Controller, type HttpResponse, type Validation } from '@/presentation/protocols'
 import { badRequest, noContent, serverError } from '@/presentation/helpers'
-import { type PollAnswerModel } from '@/domain/models'
+import { type PollOptionModel } from '@/domain/models'
 
 export class AddPollController implements Controller {
   constructor (
@@ -14,10 +14,10 @@ export class AddPollController implements Controller {
       if (error) {
         return badRequest(error)
       }
-      const { question, answers } = request
+      const { question, options } = request
       await this.addPoll.add({
         question,
-        answers,
+        options,
         date: new Date()
       })
       return noContent()
@@ -30,6 +30,6 @@ export class AddPollController implements Controller {
 export namespace AddPollController {
   export type Request = {
     question: string
-    answers: PollAnswerModel
+    options: PollOptionModel
   }
 }

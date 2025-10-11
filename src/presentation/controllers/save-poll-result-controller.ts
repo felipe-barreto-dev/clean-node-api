@@ -1,23 +1,23 @@
 import { type Controller, type HttpResponse } from '@/presentation/protocols'
 import { forbidden, serverError, ok } from '@/presentation/helpers'
 import { InvalidParamError } from '@/presentation/errors'
-import { type LoadAnswersByPoll, type SavePollResult } from '@/domain/usecases'
+import { type LoadOptionsByPoll, type SavePollResult } from '@/domain/usecases'
 
 export class SavePollResultController implements Controller {
   constructor (
-    private readonly loadAnswersByPoll: LoadAnswersByPoll,
+    private readonly loadOptionsByPoll: LoadOptionsByPoll,
     private readonly savePollResult: SavePollResult
   ) {}
 
   async handle (request: SavePollResultController.Request): Promise<HttpResponse> {
     try {
-      const { answer, pollId } = request
-      const answers = await this.loadAnswersByPoll.loadAnswers(pollId)
+      const { option, pollId } = request
+      const options = await this.loadOptionsByPoll.loadOptions(pollId)
 
-      if (!answers.length) {
+      if (!options.length) {
         return forbidden(new InvalidParamError('pollId'))
-      } else if (!answers.includes(answer)) {
-        return forbidden(new InvalidParamError('answer'))
+      } else if (!options.includes(option)) {
+        return forbidden(new InvalidParamError('option'))
       }
       const pollResult = await this.savePollResult.save({
         ...request,
@@ -34,6 +34,6 @@ export namespace SavePollResultController {
   export type Request = {
     pollId: string
     accountId: string
-    answer: string
+    option: string
   }
 }
