@@ -22,11 +22,11 @@ export class DbLoadPollResult implements LoadPollResult {
       pollId: poll.id,
       question: poll.question,
       date: poll.date,
-      answers: poll.answers.map(answer => ({
-        ...answer,
+      options: poll.options.map(option => ({
+        ...option,
         count: 0,
         percent: 0,
-        isCurrentAccountAnswer: false
+        isCurrentAccountOption: false
       }))
     }
   }
