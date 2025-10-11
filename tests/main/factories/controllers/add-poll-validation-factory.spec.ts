@@ -8,7 +8,7 @@ describe('AddPollValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
     makeAddPollValidation()
     const validations: Validation[] = []
-    for (const field of ['question', 'answers']) {
+    for (const field of ['question', 'options']) {
       validations.push(new RequiredFieldValidation(field))
     }
     expect(ValidationComposite).toHaveBeenCalledWith(validations)

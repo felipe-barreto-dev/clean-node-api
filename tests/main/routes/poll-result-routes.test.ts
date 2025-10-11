@@ -29,7 +29,7 @@ describe('Poll Result Routes', () => {
       await request(app)
         .put('/api/polls/any_id/results')
         .send({
-          answer: 'any_answer'
+          option: 'any_option'
         })
         .expect(403)
     })
@@ -52,11 +52,11 @@ describe('Poll Result Routes', () => {
       })
       const res = await pollCollection.insertOne({
         question: 'Question',
-        answers: [{
-          answer: 'Answer 1',
+        options: [{
+          option: 'Option 1',
           image: 'http://image-name.com'
         }, {
-          answer: 'Answer 2'
+          option: 'Option 2'
         }],
         date: new Date()
       })
@@ -64,7 +64,7 @@ describe('Poll Result Routes', () => {
         .put(`/api/polls/${res.insertedId.toHexString()}/results`)
         .set('x-access-token', accessToken)
         .send({
-          answer: 'Answer 2'
+          option: 'Option 2'
         })
         .expect(200)
     })
@@ -110,11 +110,11 @@ describe('Poll Result Routes', () => {
       })
       const res = await pollCollection.insertOne({
         question: 'Question',
-        answers: [{
-          answer: 'Answer 1',
+        options: [{
+          option: 'Option 1',
           image: 'http://image-name.com'
         }, {
-          answer: 'Answer 2'
+          option: 'Option 2'
         }],
         date: new Date()
       })

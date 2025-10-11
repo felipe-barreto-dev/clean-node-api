@@ -46,8 +46,8 @@ describe('Poll Routes', () => {
         .set('x-access-token', accessToken)
         .send({
           question: 'Question?',
-          answers: [{
-            answer: 'Answer 1',
+          options: [{
+            option: 'Option 1',
             image: 'http://image-name.com'
           }]
         })
@@ -75,8 +75,8 @@ describe('Poll Routes', () => {
         .set('x-access-token', 'any_token')
         .send({
           question: 'Question?',
-          answers: [{
-            answer: 'Answer 1',
+          options: [{
+            option: 'Option 1',
             image: 'http://image-name.com'
           }]
         })
@@ -88,8 +88,8 @@ describe('Poll Routes', () => {
         .post('/api/polls')
         .send({
           question: 'Question?',
-          answers: [{
-            answer: 'Answer 1',
+          options: [{
+            option: 'Option 1',
             image: 'http://image-name.com'
           }]
         })
@@ -163,8 +163,8 @@ describe('GET /polls', () => {
       .get('/api/polls')
       .send({
         question: 'Question?',
-        answers: [{
-          answer: 'Answer 1',
+        options: [{
+          option: 'Option 1',
           image: 'http://image-name.com'
         }]
       })
