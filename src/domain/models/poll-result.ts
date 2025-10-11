@@ -1,14 +1,14 @@
 export type PollResultModel = {
   pollId: string
   question: string
-  answers: PollResultAnswerModel[]
+  options: PollResultOptionModel[]
   date: Date
 }
 
-type PollResultAnswerModel = {
+type PollResultOptionModel = {
   image?: string
-  answer: string
+  option: string
   count: number
   percent: number
-  isCurrentAccountAnswer: boolean
+  isCurrentAccountOption: boolean
 }

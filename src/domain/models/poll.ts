@@ -1,11 +1,11 @@
 export interface PollModel {
   id?: string
   question: string
-  answers: PollAnswerModel
+  options: PollOptionModel
   date: Date
 }
 
-export type PollAnswerModel = Array<{
+export type PollOptionModel = Array<{
   image?: string
-  answer: string
+  option: string
 }>

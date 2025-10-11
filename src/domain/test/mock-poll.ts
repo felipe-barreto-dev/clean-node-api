@@ -6,10 +6,10 @@ export const mockPollModel = (): PollModel => {
   return {
     id: faker.database.mongodbObjectId(),
     question: faker.word.words(),
-    answers: [{
-      answer: faker.word.preposition()
+    options: [{
+      option: faker.word.preposition()
     }, {
-      answer: faker.word.preposition(),
+      option: faker.word.preposition(),
       image: faker.image.url()
     }],
     date: faker.date.recent()
@@ -23,11 +23,11 @@ export const mockPollModels = (): PollModel[] => [
 
 export const mockAddPollParams = (): AddPoll.Params => ({
   question: faker.word.words(),
-  answers: [{
+  options: [{
     image: faker.image.url(),
-    answer: faker.word.preposition()
+    option: faker.word.preposition()
   }, {
-    answer: faker.word.preposition()
+    option: faker.word.preposition()
   }],
   date: faker.date.recent()
 })

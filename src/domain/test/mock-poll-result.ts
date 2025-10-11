@@ -3,17 +3,17 @@ import { type PollResultModel } from '../models'
 
 export const mockPollResultModel = (): PollResultModel => ({
   question: faker.word.words(),
-  answers: [{
+  options: [{
     image: faker.image.url(),
-    answer: faker.word.preposition(),
+    option: faker.word.preposition(),
     count: faker.number.int(),
     percent: faker.number.int(),
-    isCurrentAccountAnswer: true
+    isCurrentAccountOption: true
   }, {
-    answer: faker.word.preposition(),
+    option: faker.word.preposition(),
     count: faker.number.int(),
     percent: faker.number.int(),
-    isCurrentAccountAnswer: true
+    isCurrentAccountOption: true
   }],
   date: faker.date.recent(),
   pollId: faker.database.mongodbObjectId()
