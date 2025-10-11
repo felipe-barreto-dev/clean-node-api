@@ -51,7 +51,7 @@ describe('PollMongoRepository', () => {
       await sut.save({
         pollId: poll.id,
         accountId,
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       })
       const pollResult = await pollResultCollection.findOne({
@@ -67,14 +67,14 @@ describe('PollMongoRepository', () => {
       await pollResultCollection.insertOne({
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId),
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       })
       const sut = makeSut()
       await sut.save({
         pollId: poll.id,
         accountId,
-        answer: poll.answers[1].answer,
+        option: poll.options[1].option,
         date: new Date()
       })
       const pollResult = await pollResultCollection
@@ -96,25 +96,25 @@ describe('PollMongoRepository', () => {
       await pollResultCollection.insertMany([{
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId2),
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       }, {
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId),
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       }])
       const sut = makeSut()
       const pollResult = await sut.loadByPollId(poll.id, accountId)
       expect(pollResult).toBeTruthy()
       expect(pollResult.pollId).toEqual(poll.id)
-      expect(pollResult.answers[0].count).toBe(2)
-      expect(pollResult.answers[0].percent).toBe(100)
-      expect(pollResult.answers[0].isCurrentAccountAnswer).toBe(true)
-      expect(pollResult.answers[1].count).toBe(0)
-      expect(pollResult.answers[1].percent).toBe(0)
-      expect(pollResult.answers[1].isCurrentAccountAnswer).toBe(false)
-      expect(pollResult.answers.length).toBe(poll.answers.length)
+      expect(pollResult.options[0].count).toBe(2)
+      expect(pollResult.options[0].percent).toBe(100)
+      expect(pollResult.options[0].isCurrentAccountOption).toBe(true)
+      expect(pollResult.options[1].count).toBe(0)
+      expect(pollResult.options[1].percent).toBe(0)
+      expect(pollResult.options[1].isCurrentAccountOption).toBe(false)
+      expect(pollResult.options.length).toBe(poll.options.length)
     })
 
     test('Should load poll result 2', async () => {
@@ -125,30 +125,30 @@ describe('PollMongoRepository', () => {
       await pollResultCollection.insertMany([{
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId),
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       }, {
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId2),
-        answer: poll.answers[1].answer,
+        option: poll.options[1].option,
         date: new Date()
       }, {
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId3),
-        answer: poll.answers[1].answer,
+        option: poll.options[1].option,
         date: new Date()
       }])
       const sut = makeSut()
       const pollResult = await sut.loadByPollId(poll.id, accountId2)
       expect(pollResult).toBeTruthy()
       expect(pollResult.pollId).toEqual(poll.id)
-      expect(pollResult.answers[0].count).toBe(2)
-      expect(pollResult.answers[0].percent).toBe(67)
-      expect(pollResult.answers[0].isCurrentAccountAnswer).toBe(true)
-      expect(pollResult.answers[1].count).toBe(1)
-      expect(pollResult.answers[1].percent).toBe(33)
-      expect(pollResult.answers[1].isCurrentAccountAnswer).toBe(false)
-      expect(pollResult.answers.length).toBe(poll.answers.length)
+      expect(pollResult.options[0].count).toBe(2)
+      expect(pollResult.options[0].percent).toBe(67)
+      expect(pollResult.options[0].isCurrentAccountOption).toBe(true)
+      expect(pollResult.options[1].count).toBe(1)
+      expect(pollResult.options[1].percent).toBe(33)
+      expect(pollResult.options[1].isCurrentAccountOption).toBe(false)
+      expect(pollResult.options.length).toBe(poll.options.length)
     })
 
     test('Should load poll result 3', async () => {
@@ -159,25 +159,25 @@ describe('PollMongoRepository', () => {
       await pollResultCollection.insertMany([{
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId),
-        answer: poll.answers[0].answer,
+        option: poll.options[0].option,
         date: new Date()
       }, {
         pollId: new ObjectId(poll.id),
         accountId: new ObjectId(accountId2),
-        answer: poll.answers[1].answer,
+        option: poll.options[1].option,
         date: new Date()
       }])
       const sut = makeSut()
       const pollResult = await sut.loadByPollId(poll.id, accountId3)
       expect(pollResult).toBeTruthy()
       expect(pollResult.pollId).toEqual(poll.id)
-      expect(pollResult.answers[0].count).toBe(1)
-      expect(pollResult.answers[0].percent).toBe(50)
-      expect(pollResult.answers[0].isCurrentAccountAnswer).toBe(false)
-      expect(pollResult.answers[1].count).toBe(1)
-      expect(pollResult.answers[1].percent).toBe(50)
-      expect(pollResult.answers[1].isCurrentAccountAnswer).toBe(false)
-      expect(pollResult.answers.length).toBe(poll.answers.length)
+      expect(pollResult.options[0].count).toBe(1)
+      expect(pollResult.options[0].percent).toBe(50)
+      expect(pollResult.options[0].isCurrentAccountOption).toBe(false)
+      expect(pollResult.options[1].count).toBe(1)
+      expect(pollResult.options[1].percent).toBe(50)
+      expect(pollResult.options[1].isCurrentAccountOption).toBe(false)
+      expect(pollResult.options.length).toBe(poll.options.length)
     })
 
     test('Should return null if there is no poll result', async () => {

@@ -21,12 +21,12 @@ describe('Poll Mongo Repository', () => {
     await sut.add({
       id: null,
       question: 'any_question',
-      answers: [{
+      options: [{
         image: 'any_image',
-        answer: 'any_answer'
+        option: 'any_option'
       },
       {
-        answer: 'a'
+        option: 'a'
       }],
       date: new Date()
     })
@@ -39,24 +39,24 @@ describe('Poll Mongo Repository', () => {
     await sut.add({
       id: null,
       question: 'question_1',
-      answers: [{
+      options: [{
         image: 'any_image',
-        answer: 'any_answer'
+        option: 'any_option'
       },
       {
-        answer: 'answer'
+        option: 'option'
       }],
       date: new Date()
     })
     await sut.add({
       id: null,
       question: 'question_2',
-      answers: [{
+      options: [{
         image: 'any_image',
-        answer: 'any_answer'
+        option: 'any_option'
       },
       {
-        answer: 'answer'
+        option: 'option'
       }],
       date: new Date()
     })
