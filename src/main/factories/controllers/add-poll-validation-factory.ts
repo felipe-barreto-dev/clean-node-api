@@ -3,7 +3,7 @@ import { type Validation } from '@/presentation/protocols'
 
 export const makeAddPollValidation = (): ValidationComposite => {
   const validations: Validation[] = []
-  for (const field of ['question', 'answers']) {
+  for (const field of ['question', 'options']) {
     validations.push(new RequiredFieldValidation(field))
   }
   return new ValidationComposite(validations)
