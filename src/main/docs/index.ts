@@ -1,735 +1,143 @@
 export default {
   openapi: '3.1.0',
   info: {
-    title: 'Swagger PollsAPI - OpenAPI 3.1',
-    description: 'This is the Poll API Documentation based on the OpenAPI 3.1 specification. \n\nSome useful links:\n- [The Poll API repository](https://github.com/felipe-barreto-dev/clean-node-api)\n',
-    termsOfService: 'http://swagger.io/terms/',
+    title: 'Clean Node API - Polls System',
+    description: `A RESTful API for managing polls and user accounts built with Clean Architecture principles.
+
+**Features:**
+- User authentication with JWT
+- Role-based access control (admin/user)
+- Create and manage polls
+- Vote on polls and view results
+
+**Useful links:**
+- [GitHub Repository](https://github.com/felipe-barreto-dev/clean-node-api)
+- [Security Guidelines](https://github.com/felipe-barreto-dev/clean-node-api/blob/master/SECURITY.md)`,
     contact: {
       email: 'fbarreto.dev@gmail.com'
     },
     license: {
-      name: 'Apache 2.0',
-      url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+      name: 'ISC',
+      url: 'https://opensource.org/licenses/ISC'
     },
-    version: '1.0.0'
+    version: '2.5.0'
   },
   servers: [
     {
-      url: 'https://clean-node-api-1ad8.onrender.com'
+      url: 'http://localhost:5050',
+      description: 'Development server'
+    },
+    {
+      url: 'https://clean-node-api-1ad8.onrender.com',
+      description: 'Production server'
     }
   ],
   tags: [
     {
-      name: 'polls',
-      description: 'Everything about polls'
+      name: 'Authentication',
+      description: 'User account management and authentication'
     },
     {
-      name: 'polls-result',
-      description: 'Access to polls results'
+      name: 'Polls',
+      description: 'Poll creation and management (admin only)'
     },
     {
-      name: 'account',
-      description: 'Operations about account'
+      name: 'Poll Results',
+      description: 'Poll voting and results (admin only)'
     }
   ],
   paths: {
-    '/polls': {
-      post: {
-        tags: [
-          'polls'
-        ],
-        summary: 'Add a new poll',
-        description: 'Add a new poll',
-        operationId: 'addPoll',
-        requestBody: {
-          description: 'Create a new poll',
-          content: {
-            'application/json': {
-              schema: {
-                required: [
-                  'question',
-                  'options'
-                ],
-                type: 'object',
-                properties: {
-                  question: {
-                    type: 'string',
-                    example: 'What is better?'
-                  },
-                  options: {
-                    type: 'array',
-                    xml: {
-                      wrapped: true
-                    },
-                    items: {
-                      type: 'object',
-                      properties: {
-                        image: {
-                          type: 'string',
-                          example: 'js.png'
-                        },
-                        option: {
-                          type: 'string',
-                          example: 'Javascript'
-                        }
-                      },
-                      xml: {
-                        name: 'options'
-                      }
-                    }
-                  }
-                },
-                xml: {
-                  name: 'poll'
-                }
-              }
-            }
-          },
-          required: true
-        },
-        responses: {
-          204: {
-            description: 'Successful operation'
-          },
-          400: {
-            description: 'Invalid input'
-          },
-          500: {
-            description: 'Server error'
-          }
-        }
-      },
-      get: {
-        tags: [
-          'polls'
-        ],
-        summary: 'Find all polls',
-        description: 'Returns all polls',
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  required: [
-                    'name',
-                    'photoUrls'
-                  ],
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'string',
-                        example: 'mongo_uid'
-                      },
-                      date: {
-                        type: 'string',
-                        format: 'date-time'
-                      },
-                      question: {
-                        type: 'string',
-                        example: 'What is better?'
-                      },
-                      options: {
-                        type: 'array',
-                        xml: {
-                          wrapped: true
-                        },
-                        items: {
-                          type: 'object',
-                          properties: {
-                            image: {
-                              type: 'string',
-                              example: 'js.png'
-                            },
-                            option: {
-                              type: 'string',
-                              example: 'Javascript'
-                            }
-                          },
-                          xml: {
-                            name: 'options'
-                          }
-                        }
-                      }
-                    }
-                  },
-                  xml: {
-                    name: 'poll'
-                  }
-                }
-              }
-            }
-          },
-          500: {
-            description: 'Server error'
-          }
-        }
-      }
-    },
-    '/poll/{pollId}/results': {
-      put: {
-        tags: [
-          'polls-result'
-        ],
-        summary: 'Place an order for a poll',
-        description: 'Place a new order in the store',
-        operationId: 'placeOrder',
-        parameters: [
-          {
-            name: 'pollId',
-            in: 'path',
-            description: 'ID of order that needs to be fetched',
-            required: true,
-            schema: {
-              type: 'integer',
-              format: 'int64'
-            }
-          }
-        ],
-        requestBody: {
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  pollId: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 198772
-                  },
-                  quantity: {
-                    type: 'integer',
-                    format: 'int32',
-                    example: 7
-                  },
-                  shipDate: {
-                    type: 'string',
-                    format: 'date-time'
-                  },
-                  status: {
-                    type: 'string',
-                    description: 'Order Status',
-                    example: 'approved',
-                    enum: [
-                      'placed',
-                      'approved',
-                      'delivered'
-                    ]
-                  },
-                  complete: {
-                    type: 'boolean'
-                  }
-                },
-                xml: {
-                  name: 'order'
-                }
-              }
-            },
-            'application/xml': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  pollId: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 198772
-                  },
-                  quantity: {
-                    type: 'integer',
-                    format: 'int32',
-                    example: 7
-                  },
-                  shipDate: {
-                    type: 'string',
-                    format: 'date-time'
-                  },
-                  status: {
-                    type: 'string',
-                    description: 'Order Status',
-                    example: 'approved',
-                    enum: [
-                      'placed',
-                      'approved',
-                      'delivered'
-                    ]
-                  },
-                  complete: {
-                    type: 'boolean'
-                  }
-                },
-                xml: {
-                  name: 'order'
-                }
-              }
-            },
-            'application/x-www-form-urlencoded': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  pollId: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 198772
-                  },
-                  quantity: {
-                    type: 'integer',
-                    format: 'int32',
-                    example: 7
-                  },
-                  shipDate: {
-                    type: 'string',
-                    format: 'date-time'
-                  },
-                  status: {
-                    type: 'string',
-                    description: 'Order Status',
-                    example: 'approved',
-                    enum: [
-                      'placed',
-                      'approved',
-                      'delivered'
-                    ]
-                  },
-                  complete: {
-                    type: 'boolean'
-                  }
-                },
-                xml: {
-                  name: 'order'
-                }
-              }
-            }
-          }
-        },
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 10
-                    },
-                    pollId: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 198772
-                    },
-                    quantity: {
-                      type: 'integer',
-                      format: 'int32',
-                      example: 7
-                    },
-                    shipDate: {
-                      type: 'string',
-                      format: 'date-time'
-                    },
-                    status: {
-                      type: 'string',
-                      description: 'Order Status',
-                      example: 'approved',
-                      enum: [
-                        'placed',
-                        'approved',
-                        'delivered'
-                      ]
-                    },
-                    complete: {
-                      type: 'boolean'
-                    }
-                  },
-                  xml: {
-                    name: 'order'
-                  }
-                }
-              }
-            }
-          },
-          405: {
-            description: 'Invalid input'
-          }
-        }
-      },
-      get: {
-        tags: [
-          'polls-result'
-        ],
-        summary: 'Find purchase order by ID',
-        description: 'For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.',
-        operationId: 'getOrderById',
-        parameters: [
-          {
-            name: 'pollId',
-            in: 'path',
-            description: 'ID of order that needs to be fetched',
-            required: true,
-            schema: {
-              type: 'integer',
-              format: 'int64'
-            }
-          }
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            content: {
-              'application/json': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 10
-                    },
-                    pollId: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 198772
-                    },
-                    quantity: {
-                      type: 'integer',
-                      format: 'int32',
-                      example: 7
-                    },
-                    shipDate: {
-                      type: 'string',
-                      format: 'date-time'
-                    },
-                    status: {
-                      type: 'string',
-                      description: 'Order Status',
-                      example: 'approved',
-                      enum: [
-                        'placed',
-                        'approved',
-                        'delivered'
-                      ]
-                    },
-                    complete: {
-                      type: 'boolean'
-                    }
-                  },
-                  xml: {
-                    name: 'order'
-                  }
-                }
-              },
-              'application/xml': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 10
-                    },
-                    pollId: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 198772
-                    },
-                    quantity: {
-                      type: 'integer',
-                      format: 'int32',
-                      example: 7
-                    },
-                    shipDate: {
-                      type: 'string',
-                      format: 'date-time'
-                    },
-                    status: {
-                      type: 'string',
-                      description: 'Order Status',
-                      example: 'approved',
-                      enum: [
-                        'placed',
-                        'approved',
-                        'delivered'
-                      ]
-                    },
-                    complete: {
-                      type: 'boolean'
-                    }
-                  },
-                  xml: {
-                    name: 'order'
-                  }
-                }
-              }
-            }
-          },
-          400: {
-            description: 'Invalid ID supplied'
-          },
-          404: {
-            description: 'Order not found'
-          }
-        }
-      }
-    },
     '/signup': {
       post: {
-        tags: [
-          'account'
-        ],
-        summary: 'Create account',
-        description: 'This can only be done by the logged in account.',
-        operationId: 'createAccount',
+        tags: ['Authentication'],
+        summary: 'Create a new user account',
+        description: 'Register a new user and receive an access token',
+        operationId: 'signup',
         requestBody: {
-          description: 'Created account object',
+          required: true,
           content: {
             'application/json': {
               schema: {
                 type: 'object',
+                required: ['name', 'email', 'password', 'passwordConfirmation', 'role'],
                 properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  accountname: {
+                  name: {
                     type: 'string',
-                    example: 'theAccount'
-                  },
-                  firstName: {
-                    type: 'string',
-                    example: 'John'
-                  },
-                  lastName: {
-                    type: 'string',
-                    example: 'James'
+                    example: 'John Doe',
+                    description: 'Full name of the user'
                   },
                   email: {
                     type: 'string',
-                    example: 'john@email.com'
+                    format: 'email',
+                    example: 'john@example.com',
+                    description: 'Valid email address'
                   },
                   password: {
                     type: 'string',
-                    example: '12345'
+                    format: 'password',
+                    example: 'password123',
+                    description: 'User password'
                   },
-                  phone: {
+                  passwordConfirmation: {
                     type: 'string',
-                    example: '12345'
+                    format: 'password',
+                    example: 'password123',
+                    description: 'Must match password field'
                   },
-                  accountStatus: {
-                    type: 'integer',
-                    description: 'Account Status',
-                    format: 'int32',
-                    example: 1
+                  role: {
+                    type: 'string',
+                    enum: ['admin', 'user'],
+                    example: 'admin',
+                    description: 'User role for access control'
                   }
-                },
-                xml: {
-                  name: 'account'
-                }
-              }
-            },
-            'application/xml': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  accountname: {
-                    type: 'string',
-                    example: 'theAccount'
-                  },
-                  firstName: {
-                    type: 'string',
-                    example: 'John'
-                  },
-                  lastName: {
-                    type: 'string',
-                    example: 'James'
-                  },
-                  email: {
-                    type: 'string',
-                    example: 'john@email.com'
-                  },
-                  password: {
-                    type: 'string',
-                    example: '12345'
-                  },
-                  phone: {
-                    type: 'string',
-                    example: '12345'
-                  },
-                  accountStatus: {
-                    type: 'integer',
-                    description: 'Account Status',
-                    format: 'int32',
-                    example: 1
-                  }
-                },
-                xml: {
-                  name: 'account'
-                }
-              }
-            },
-            'application/x-www-form-urlencoded': {
-              schema: {
-                type: 'object',
-                properties: {
-                  id: {
-                    type: 'integer',
-                    format: 'int64',
-                    example: 10
-                  },
-                  accountname: {
-                    type: 'string',
-                    example: 'theAccount'
-                  },
-                  firstName: {
-                    type: 'string',
-                    example: 'John'
-                  },
-                  lastName: {
-                    type: 'string',
-                    example: 'James'
-                  },
-                  email: {
-                    type: 'string',
-                    example: 'john@email.com'
-                  },
-                  password: {
-                    type: 'string',
-                    example: '12345'
-                  },
-                  phone: {
-                    type: 'string',
-                    example: '12345'
-                  },
-                  accountStatus: {
-                    type: 'integer',
-                    description: 'Account Status',
-                    format: 'int32',
-                    example: 1
-                  }
-                },
-                xml: {
-                  name: 'account'
                 }
               }
             }
           }
         },
         responses: {
-          default: {
-            description: 'successful operation',
+          200: {
+            description: 'Account created successfully',
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
                   properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 10
-                    },
-                    accountname: {
+                    accessToken: {
                       type: 'string',
-                      example: 'theAccount'
+                      example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                      description: 'JWT token for authentication'
                     },
-                    firstName: {
+                    name: {
                       type: 'string',
-                      example: 'John'
-                    },
-                    lastName: {
-                      type: 'string',
-                      example: 'James'
-                    },
-                    email: {
-                      type: 'string',
-                      example: 'john@email.com'
-                    },
-                    password: {
-                      type: 'string',
-                      example: '12345'
-                    },
-                    phone: {
-                      type: 'string',
-                      example: '12345'
-                    },
-                    accountStatus: {
-                      type: 'integer',
-                      description: 'Account Status',
-                      format: 'int32',
-                      example: 1
+                      example: 'John Doe'
                     }
-                  },
-                  xml: {
-                    name: 'account'
                   }
                 }
-              },
-              'application/xml': {
-                schema: {
-                  type: 'object',
-                  properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 10
-                    },
-                    accountname: {
-                      type: 'string',
-                      example: 'theAccount'
-                    },
-                    firstName: {
-                      type: 'string',
-                      example: 'John'
-                    },
-                    lastName: {
-                      type: 'string',
-                      example: 'James'
-                    },
-                    email: {
-                      type: 'string',
-                      example: 'john@email.com'
-                    },
-                    password: {
-                      type: 'string',
-                      example: '12345'
-                    },
-                    phone: {
-                      type: 'string',
-                      example: '12345'
-                    },
-                    accountStatus: {
-                      type: 'integer',
-                      description: 'Account Status',
-                      format: 'int32',
-                      example: 1
-                    }
-                  },
-                  xml: {
-                    name: 'account'
-                  }
-                }
+              }
+            }
+          },
+          400: {
+            description: 'Invalid input data',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          403: {
+            description: 'Email already in use',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
               }
             }
           }
@@ -738,321 +146,429 @@ export default {
     },
     '/login': {
       post: {
-        tags: [
-          'account'
-        ],
-        summary: 'Logs account into the system',
-        description: '',
-        operationId: 'loginAccount',
-        parameters: [
-          {
-            name: 'accountname',
-            in: 'query',
-            description: 'The account name for login',
-            required: false,
-            schema: {
-              type: 'string'
-            }
-          },
-          {
-            name: 'password',
-            in: 'query',
-            description: 'The password for login in clear text',
-            required: false,
-            schema: {
-              type: 'string'
-            }
-          }
-        ],
-        responses: {
-          200: {
-            description: 'successful operation',
-            headers: {
-              'X-Rate-Limit': {
-                description: 'calls per hour allowed by the account',
-                schema: {
-                  type: 'integer',
-                  format: 'int32'
-                }
-              },
-              'X-Expires-After': {
-                description: 'date in UTC when token expires',
-                schema: {
-                  type: 'string',
-                  format: 'date-time'
+        tags: ['Authentication'],
+        summary: 'Authenticate user',
+        description: 'Login with email and password to receive an access token',
+        operationId: 'login',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['email', 'password'],
+                properties: {
+                  email: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'john@example.com'
+                  },
+                  password: {
+                    type: 'string',
+                    format: 'password',
+                    example: 'password123'
+                  }
                 }
               }
-            },
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Authentication successful',
             content: {
-              'application/xml': {
-                schema: {
-                  type: 'string'
-                }
-              },
               'application/json': {
                 schema: {
-                  type: 'string'
+                  type: 'object',
+                  properties: {
+                    accessToken: {
+                      type: 'string',
+                      example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'John Doe'
+                    }
+                  }
                 }
               }
             }
           },
           400: {
-            description: 'Invalid accountname/password supplied'
+            description: 'Invalid input data',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          401: {
+            description: 'Invalid credentials',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/polls': {
+      post: {
+        tags: ['Polls'],
+        summary: 'Create a new poll',
+        description: 'Create a new poll with question and options. Requires admin role.',
+        operationId: 'addPoll',
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['question', 'options'],
+                properties: {
+                  question: {
+                    type: 'string',
+                    example: 'What is your favorite programming language?',
+                    description: 'The poll question'
+                  },
+                  options: {
+                    type: 'array',
+                    minItems: 2,
+                    items: {
+                      type: 'object',
+                      required: ['option'],
+                      properties: {
+                        image: {
+                          type: 'string',
+                          example: 'javascript.png',
+                          description: 'Optional image URL or filename'
+                        },
+                        option: {
+                          type: 'string',
+                          example: 'JavaScript',
+                          description: 'Option text'
+                        }
+                      }
+                    },
+                    example: [
+                      { image: 'javascript.png', option: 'JavaScript' },
+                      { image: 'python.png', option: 'Python' },
+                      { image: 'java.png', option: 'Java' }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          204: {
+            description: 'Poll created successfully'
+          },
+          400: {
+            description: 'Invalid input data',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          403: {
+            description: 'Access denied - admin role required',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          }
+        }
+      },
+      get: {
+        tags: ['Polls'],
+        summary: 'List all polls',
+        description: 'Retrieve all polls. Requires admin role.',
+        operationId: 'loadPolls',
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: 'List of polls retrieved successfully',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'array',
+                  items: { $ref: '#/components/schemas/Poll' }
+                }
+              }
+            }
+          },
+          204: {
+            description: 'No polls found'
+          },
+          403: {
+            description: 'Access denied - admin role required',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          }
+        }
+      }
+    },
+    '/polls/{pollId}/results': {
+      put: {
+        tags: ['Poll Results'],
+        summary: 'Vote on a poll',
+        description: 'Submit a vote for a poll option. Requires admin role.',
+        operationId: 'savePollResult',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'pollId',
+            in: 'path',
+            required: true,
+            description: 'Poll ID',
+            schema: {
+              type: 'string',
+              example: '507f1f77bcf86cd799439011'
+            }
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['option'],
+                properties: {
+                  option: {
+                    type: 'string',
+                    example: 'JavaScript',
+                    description: 'The option to vote for'
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          200: {
+            description: 'Vote registered successfully',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PollResult' }
+              }
+            }
+          },
+          403: {
+            description: 'Access denied - admin role required',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          404: {
+            description: 'Poll not found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          }
+        }
+      },
+      get: {
+        tags: ['Poll Results'],
+        summary: 'Get poll results',
+        description: 'Retrieve results for a specific poll. Requires admin role.',
+        operationId: 'loadPollResult',
+        security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: 'pollId',
+            in: 'path',
+            required: true,
+            description: 'Poll ID',
+            schema: {
+              type: 'string',
+              example: '507f1f77bcf86cd799439011'
+            }
+          }
+        ],
+        responses: {
+          200: {
+            description: 'Poll results retrieved successfully',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/PollResult' }
+              }
+            }
+          },
+          403: {
+            description: 'Access denied - admin role required',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          404: {
+            description: 'Poll not found',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
+          },
+          500: {
+            description: 'Internal server error',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/Error' }
+              }
+            }
           }
         }
       }
     }
   },
   components: {
-    schemas: {
-      Order: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'integer',
-            format: 'int64',
-            example: 10
-          },
-          pollId: {
-            type: 'integer',
-            format: 'int64',
-            example: 198772
-          },
-          quantity: {
-            type: 'integer',
-            format: 'int32',
-            example: 7
-          },
-          shipDate: {
-            type: 'string',
-            format: 'date-time'
-          },
-          status: {
-            type: 'string',
-            description: 'Order Status',
-            example: 'approved',
-            enum: [
-              'placed',
-              'approved',
-              'delivered'
-            ]
-          },
-          complete: {
-            type: 'boolean'
-          }
-        },
-        xml: {
-          name: 'order'
-        }
-      },
-      Account: {
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            example: 'mongo_uid'
-          },
-          name: {
-            type: 'string',
-            example: 'name'
-          },
-          email: {
-            type: 'string',
-            example: 'john@email.com'
-          },
-          password: {
-            type: 'string',
-            example: '12345'
-          }
-        },
-        xml: {
-          name: 'account'
-        }
-      },
-      Poll: {
-        required: [
-          'name',
-          'photoUrls'
-        ],
-        type: 'object',
-        properties: {
-          id: {
-            type: 'integer',
-            format: 'int64',
-            example: 10
-          },
-          name: {
-            type: 'string',
-            example: 'doggie'
-          },
-          category: {
-            type: 'object',
-            properties: {
-              id: {
-                type: 'integer',
-                format: 'int64',
-                example: 1
-              },
-              name: {
-                type: 'string',
-                example: 'Dogs'
-              }
-            },
-            xml: {
-              name: 'category'
-            }
-          },
-          photoUrls: {
-            type: 'array',
-            xml: {
-              wrapped: true
-            },
-            items: {
-              type: 'string',
-              xml: {
-                name: 'photoUrl'
-              }
-            }
-          },
-          tags: {
-            type: 'array',
-            xml: {
-              wrapped: true
-            },
-            items: {
-              type: 'object',
-              properties: {
-                id: {
-                  type: 'integer',
-                  format: 'int64'
-                },
-                name: {
-                  type: 'string'
-                }
-              },
-              xml: {
-                name: 'tag'
-              }
-            }
-          },
-          status: {
-            type: 'string',
-            description: 'poll status in the store',
-            enum: [
-              'available',
-              'pending',
-              'sold'
-            ]
-          }
-        },
-        xml: {
-          name: 'poll'
-        }
-      },
-      ApiResponse: {
-        type: 'object',
-        properties: {
-          code: {
-            type: 'integer',
-            format: 'int32'
-          },
-          type: {
-            type: 'string'
-          },
-          message: {
-            type: 'string'
-          }
-        },
-        xml: {
-          name: '##default'
-        }
+    securitySchemes: {
+      bearerAuth: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter your JWT token in the format: Bearer {token}'
       }
     },
-    requestBodies: {
+    schemas: {
       Poll: {
-        description: 'Poll object that needs to be added',
-        content: {
-          'application/json': {
-            schema: {
-              required: [
-                'question',
-                'options'
-              ],
+        type: 'object',
+        properties: {
+          id: {
+            type: 'string',
+            example: '507f1f77bcf86cd799439011',
+            description: 'MongoDB ObjectId'
+          },
+          question: {
+            type: 'string',
+            example: 'What is your favorite programming language?'
+          },
+          options: {
+            type: 'array',
+            items: {
               type: 'object',
               properties: {
-                id: {
-                  type: 'integer',
-                  format: 'int64',
-                  example: 10
-                },
-                name: {
+                image: {
                   type: 'string',
-                  example: 'doggie'
+                  example: 'javascript.png'
                 },
-                category: {
-                  type: 'object',
-                  properties: {
-                    id: {
-                      type: 'integer',
-                      format: 'int64',
-                      example: 1
-                    },
-                    name: {
-                      type: 'string',
-                      example: 'Dogs'
-                    }
-                  },
-                  xml: {
-                    name: 'category'
-                  }
-                },
-                photoUrls: {
-                  type: 'array',
-                  xml: {
-                    wrapped: true
-                  },
-                  items: {
-                    type: 'string',
-                    xml: {
-                      name: 'photoUrl'
-                    }
-                  }
-                },
-                tags: {
-                  type: 'array',
-                  xml: {
-                    wrapped: true
-                  },
-                  items: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'integer',
-                        format: 'int64'
-                      },
-                      name: {
-                        type: 'string'
-                      }
-                    },
-                    xml: {
-                      name: 'tag'
-                    }
-                  }
-                },
-                status: {
+                option: {
                   type: 'string',
-                  description: 'poll status in the store',
-                  enum: [
-                    'available',
-                    'pending',
-                    'sold'
-                  ]
+                  example: 'JavaScript'
                 }
-              },
-              xml: {
-                name: 'poll'
               }
             }
+          },
+          date: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-10-11T00:00:00.000Z'
+          }
+        }
+      },
+      PollResult: {
+        type: 'object',
+        properties: {
+          pollId: {
+            type: 'string',
+            example: '507f1f77bcf86cd799439011'
+          },
+          question: {
+            type: 'string',
+            example: 'What is your favorite programming language?'
+          },
+          options: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                image: {
+                  type: 'string',
+                  example: 'javascript.png'
+                },
+                option: {
+                  type: 'string',
+                  example: 'JavaScript'
+                },
+                count: {
+                  type: 'integer',
+                  example: 42,
+                  description: 'Number of votes for this option'
+                },
+                percent: {
+                  type: 'number',
+                  format: 'float',
+                  example: 67.74,
+                  description: 'Percentage of total votes'
+                },
+                isCurrentAccountOption: {
+                  type: 'boolean',
+                  example: true,
+                  description: 'Whether the authenticated user voted for this option'
+                }
+              }
+            }
+          },
+          date: {
+            type: 'string',
+            format: 'date-time',
+            example: '2025-10-11T00:00:00.000Z'
+          }
+        }
+      },
+      Error: {
+        type: 'object',
+        properties: {
+          error: {
+            type: 'string',
+            example: 'Invalid parameter: email'
           }
         }
       }
