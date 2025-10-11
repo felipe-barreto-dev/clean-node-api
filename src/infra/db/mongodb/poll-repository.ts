@@ -1,13 +1,18 @@
 import { type PollModel } from '@/domain/models'
 import { MongoHelper } from './helpers/mongo-helper'
-import { type LoadPollsRepository, type CheckPollByIdRepository, type LoadAnswersByPollRepository, type LoadPollByIdRepository, type AddPollRepository } from '@/data/protocols'
+import { type LoadPollsRepository, type CheckPollByIdRepository, type LoadOptionsByPollRepository, type LoadPollByIdRepository, type AddPollRepository } from '@/data/protocols'
 import { QueryBuilder } from './helpers'
 import { ObjectId } from 'mongodb'
 
-export class PollMongoRepository implements AddPollRepository, LoadPollsRepository, LoadAnswersByPollRepository, LoadPollByIdRepository, CheckPollByIdRepository {
-  async add (pollData: PollModel): Promise<void> {
+export class PollMongoRepository implements AddPollRepository, LoadPollsRepository, LoadOptionsByPollRepository, LoadPollByIdRepository, CheckPollByIdRepository {
+  async add (pollData: PollModel): Promise<AddPollRepository.Result> {
     const pollCollection = await MongoHelper.getCollection('polls')
-    await pollCollection.insertOne(pollData)
+    const result = await pollCollection.insertOne(pollData)
+    return {
+      id: result.insertedId.toString(),
+      question: pollData.question,
+      date: pollData.date
+    }
   }
 
   async loadAll (): Promise<PollModel[]> {
@@ -16,16 +21,16 @@ export class PollMongoRepository implements AddPollRepository, LoadPollsReposito
     const polls: PollModel[] = pollsData.map(pollData => ({
       id: pollData._id.toString(),
       question: pollData.question,
-      answers: pollData.answers.map((answerData: { image: any, answer: any }) => ({
-        image: answerData.image,
-        answer: answerData.answer
+      options: pollData.options.map((optionData: { image: any, option: any }) => ({
+        image: optionData.image,
+        option: optionData.option
       })),
       date: pollData.date
     }))
     return polls
   }
 
-  async loadAnswers (id: string): Promise<LoadAnswersByPollRepository.Result> {
+  async loadOptions (id: string): Promise<LoadOptionsByPollRepository.Result> {
     const pollCollection = await MongoHelper.getCollection('polls')
     const query = new QueryBuilder()
       .match({
@@ -33,11 +38,11 @@ export class PollMongoRepository implements AddPollRepository, LoadPollsReposito
       })
       .project({
         _id: 0,
-        answers: '$answers.answer'
+        options: '$options.option'
       })
       .build()
     const polls = await pollCollection.aggregate(query).toArray()
-    return polls[0]?.answers || []
+    return polls[0]?.options || []
   }
 
   async loadById (id: string): Promise<PollModel> {

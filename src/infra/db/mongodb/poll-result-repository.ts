@@ -13,7 +13,7 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
       accountId: new ObjectId(data.accountId)
     }, {
       $set: {
-        answer: data.answer,
+        option: data.option,
         date: data.date
       }
     }, {
@@ -54,15 +54,15 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
           question: '$poll.question',
           date: '$poll.date',
           total: '$total',
-          answer: '$data.answer',
-          answers: '$poll.answers'
+          option: '$data.option',
+          options: '$poll.options'
         },
         count: {
           $sum: 1
         },
-        currentAccountAnswer: {
+        currentAccountOption: {
           $push: {
-            $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.answer', '$invalid']
+            $cond: [{ $eq: ['$data.accountId', new ObjectId(accountId)] }, '$data.option', '$invalid']
           }
         }
       })
@@ -71,16 +71,16 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
         pollId: '$_id.pollId',
         question: '$_id.question',
         date: '$_id.date',
-        answers: {
+        options: {
           $map: {
-            input: '$_id.answers',
+            input: '$_id.options',
             as: 'item',
             in: {
               $mergeObjects: ['$$item', {
                 count: {
                   $cond: {
                     if: {
-                      $eq: ['$$item.answer', '$_id.answer']
+                      $eq: ['$$item.option', '$_id.option']
                     },
                     then: '$count',
                     else: 0
@@ -89,7 +89,7 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
                 percent: {
                   $cond: {
                     if: {
-                      $eq: ['$$item.answer', '$_id.answer']
+                      $eq: ['$$item.option', '$_id.option']
                     },
                     then: {
                       $multiply: [{
@@ -99,10 +99,10 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
                     else: 0
                   }
                 },
-                isCurrentAccountAnswerCount: {
+                isCurrentAccountOptionCount: {
                   $cond: [{
-                    $eq: ['$$item.answer', {
-                      $arrayElemAt: ['$currentAccountAnswer', 0]
+                    $eq: ['$$item.option', {
+                      $arrayElemAt: ['$currentAccountOption', 0]
                     }]
                   }, 1, 0]
                 }
@@ -117,8 +117,8 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
           question: '$question',
           date: '$date'
         },
-        answers: {
-          $push: '$answers'
+        options: {
+          $push: '$options'
         }
       })
       .project({
@@ -126,9 +126,9 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
         pollId: '$_id.pollId',
         question: '$_id.question',
         date: '$_id.date',
-        answers: {
+        options: {
           $reduce: {
-            input: '$answers',
+            input: '$options',
             initialValue: [],
             in: {
               $concatArrays: ['$$value', '$$this']
@@ -137,24 +137,24 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
         }
       })
       .unwind({
-        path: '$answers'
+        path: '$options'
       })
       .group({
         _id: {
           pollId: '$pollId',
           question: '$question',
           date: '$date',
-          answer: '$answers.answer',
-          image: '$answers.image'
+          option: '$options.option',
+          image: '$options.image'
         },
         count: {
-          $sum: '$answers.count'
+          $sum: '$options.count'
         },
         percent: {
-          $sum: '$answers.percent'
+          $sum: '$options.percent'
         },
-        isCurrentAccountAnswerCount: {
-          $sum: '$answers.isCurrentAccountAnswerCount'
+        isCurrentAccountOptionCount: {
+          $sum: '$options.isCurrentAccountOptionCount'
         }
       })
       .project({
@@ -162,18 +162,18 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
         pollId: '$_id.pollId',
         question: '$_id.question',
         date: '$_id.date',
-        answer: {
-          answer: '$_id.answer',
+        option: {
+          option: '$_id.option',
           image: '$_id.image',
           count: round('$count'),
           percent: round('$percent'),
-          isCurrentAccountAnswer: {
-            $eq: ['$isCurrentAccountAnswerCount', 1]
+          isCurrentAccountOption: {
+            $eq: ['$isCurrentAccountOptionCount', 1]
           }
         }
       })
       .sort({
-        'answer.count': -1
+        'option.count': -1
       })
       .group({
         _id: {
@@ -181,8 +181,8 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
           question: '$question',
           date: '$date'
         },
-        answers: {
-          $push: '$answer'
+        options: {
+          $push: '$option'
         }
       })
       .project({
@@ -192,7 +192,7 @@ export class PollResultMongoRepository implements SavePollResultRepository, Load
         },
         question: '$_id.question',
         date: '$_id.date',
-        answers: '$answers'
+        options: '$options'
       })
       .build()
     const pollResult = await (await pollResultCollection).aggregate<PollResultModel>(query).toArray()
