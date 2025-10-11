@@ -48,7 +48,7 @@ export default {
               schema: {
                 required: [
                   'question',
-                  'answers'
+                  'options'
                 ],
                 type: 'object',
                 properties: {
@@ -56,7 +56,7 @@ export default {
                     type: 'string',
                     example: 'What is better?'
                   },
-                  answers: {
+                  options: {
                     type: 'array',
                     xml: {
                       wrapped: true
@@ -68,13 +68,13 @@ export default {
                           type: 'string',
                           example: 'js.png'
                         },
-                        answer: {
+                        option: {
                           type: 'string',
                           example: 'Javascript'
                         }
                       },
                       xml: {
-                        name: 'answers'
+                        name: 'options'
                       }
                     }
                   }
@@ -131,7 +131,7 @@ export default {
                         type: 'string',
                         example: 'What is better?'
                       },
-                      answers: {
+                      options: {
                         type: 'array',
                         xml: {
                           wrapped: true
@@ -143,13 +143,13 @@ export default {
                               type: 'string',
                               example: 'js.png'
                             },
-                            answer: {
+                            option: {
                               type: 'string',
                               example: 'Javascript'
                             }
                           },
                           xml: {
-                            name: 'answers'
+                            name: 'options'
                           }
                         }
                       }
@@ -976,7 +976,7 @@ export default {
             schema: {
               required: [
                 'question',
-                'answers'
+                'options'
               ],
               type: 'object',
               properties: {
