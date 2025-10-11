@@ -8,7 +8,7 @@ export namespace SavePollResult {
   export type Params = {
     pollId: string
     accountId: string
-    answer: string
+    option: string
     date: Date
   }
 

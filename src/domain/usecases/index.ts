@@ -1,4 +1,4 @@
-export * from './load-answers-by-poll'
+export * from './load-options-by-poll'
 export * from './save-poll-result'
 export * from './add-account'
 export * from './add-poll'
