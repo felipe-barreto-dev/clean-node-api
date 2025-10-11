@@ -17,7 +17,8 @@ const mockRequest = (): SignUpController.Request => ({
   name: 'valid_name',
   email: 'valid_email@email.com',
   password: 'valid_password',
-  passwordConfirmation: 'valid_password'
+  passwordConfirmation: 'valid_password',
+  role: 'admin'
 })
 
 const makeAuthentication = (): Authentication => {
@@ -79,7 +80,8 @@ describe('SignUp Controller', () => {
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
       email: 'valid_email@email.com',
-      password: 'valid_password'
+      password: 'valid_password',
+      role: 'admin'
     })
   })
 

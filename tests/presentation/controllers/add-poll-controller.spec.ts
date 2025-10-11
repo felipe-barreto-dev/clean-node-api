@@ -13,9 +13,9 @@ interface SutTypes {
 
 const mockRequest = (): AddPollController.Request => ({
   question: 'any_question',
-  answers: [{
+  options: [{
     image: 'any_image',
-    answer: 'any_answer'
+    option: 'any_option'
   }]
 })
 
@@ -61,9 +61,9 @@ describe('AddPoll Controller', () => {
     await sut.handle(mockRequest())
     expect(validateSpy).toHaveBeenCalledWith({
       question: 'any_question',
-      answers: [{
+      options: [{
         image: 'any_image',
-        answer: 'any_answer'
+        option: 'any_option'
       }]
     })
   })
@@ -81,9 +81,9 @@ describe('AddPoll Controller', () => {
     await sut.handle(mockRequest())
     expect(addSpy).toHaveBeenCalledWith({
       question: 'any_question',
-      answers: [{
+      options: [{
         image: 'any_image',
-        answer: 'any_answer'
+        option: 'any_option'
       }],
       date: new Date()
     })

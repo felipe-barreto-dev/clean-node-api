@@ -1,4 +1,4 @@
-import { type LoadAnswersByPoll, type SavePollResult } from '@/domain/usecases'
+import { type LoadOptionsByPoll, type SavePollResult } from '@/domain/usecases'
 import { type PollResultModel } from '@/domain/models'
 import MockDate from 'mockdate'
 import { throwError } from '@/domain/test'
@@ -7,14 +7,14 @@ import { ok, serverError } from '@/presentation/helpers'
 
 interface SutTypes {
   sut: SavePollResultController
-  loadAnswersByPollStub: LoadAnswersByPoll
+  loadOptionsByPollStub: LoadOptionsByPoll
   savePollResultStub: SavePollResult
 }
 
-const makeLoadAnswersByPollResult = ['Answer 1', 'Answer 2']
+const makeLoadOptionsByPollResult = ['Option 1', 'Option 2']
 
 const mockRequest = (): SavePollResultController.Request => ({
-  answer: 'Answer 1',
+  option: 'Option 1',
   pollId: 'poll_id',
   accountId: 'account_id'
 })
@@ -22,17 +22,17 @@ const mockRequest = (): SavePollResultController.Request => ({
 const makeFakePollResultModel: PollResultModel = {
   question: 'Question 1',
   pollId: '1',
-  answers: [{
-    answer: 'Answer 1',
+  options: [{
+    option: 'Option 1',
     count: 2,
-    isCurrentAccountAnswer: true,
+    isCurrentAccountOption: true,
     percent: 20,
     image: ''
   },
   {
-    answer: 'Answer 2',
+    option: 'Option 2',
     count: 2,
-    isCurrentAccountAnswer: false,
+    isCurrentAccountOption: false,
     percent: 20,
     image: ''
   }],
@@ -48,23 +48,23 @@ const makeSavePollResult = (): SavePollResult => {
   return new SavePollResultStub()
 }
 
-const makeLoadAnswersByPoll = (): LoadAnswersByPoll => {
-  class LoadAnswersByPollStub implements LoadAnswersByPoll {
-    async loadAnswers (pollId: string): Promise<LoadAnswersByPoll.Result> {
-      return makeLoadAnswersByPollResult
+const makeLoadOptionsByPoll = (): LoadOptionsByPoll => {
+  class LoadOptionsByPollStub implements LoadOptionsByPoll {
+    async loadOptions (pollId: string): Promise<LoadOptionsByPoll.Result> {
+      return makeLoadOptionsByPollResult
     }
   }
-  return new LoadAnswersByPollStub()
+  return new LoadOptionsByPollStub()
 }
 
 const makeSut = (): SutTypes => {
-  const loadAnswersByPollStub = makeLoadAnswersByPoll()
+  const loadOptionsByPollStub = makeLoadOptionsByPoll()
   const savePollResultStub = makeSavePollResult()
-  const sut = new SavePollResultController(loadAnswersByPollStub, savePollResultStub)
+  const sut = new SavePollResultController(loadOptionsByPollStub, savePollResultStub)
 
   return {
     sut,
-    loadAnswersByPollStub,
+    loadOptionsByPollStub,
     savePollResultStub
   }
 }

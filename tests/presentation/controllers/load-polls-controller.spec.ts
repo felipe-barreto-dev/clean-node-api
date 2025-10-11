@@ -11,21 +11,21 @@ interface SutTypes {
 
 const makeFakePolls: PollModel[] = [{
   question: 'Question 1',
-  answers: [{
-    answer: 'Answer 1'
+  options: [{
+    option: 'Option 1'
   },
   {
-    answer: 'Answer 2'
+    option: 'Option 2'
   }],
   date: new Date()
 },
 {
   question: 'Question 2',
-  answers: [{
-    answer: 'Answer 1'
+  options: [{
+    option: 'Option 1'
   },
   {
-    answer: 'Answer 2'
+    option: 'Option 2'
   }],
   date: new Date()
 }]
