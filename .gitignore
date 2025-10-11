@@ -2,7 +2,9 @@ node_modules
 dist
 coverage
 data
+data_backup_*
 !src/data
 !tests/data
 .vscode
+.claude
 globalConfig.json
