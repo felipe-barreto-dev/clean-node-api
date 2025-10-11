@@ -7,4 +7,5 @@ data_backup_*
 !tests/data
 .vscode
 .claude
+.env
 globalConfig.json
