@@ -1,18 +1,39 @@
 import { mockPollModel } from '@/domain/test'
-import { type LoadAnswersByPollRepository, type AddPollRepository, type CheckPollByIdRepository, type LoadPollsRepository, type LoadPollByIdRepository } from '@/data/protocols'
+import { type LoadOptionsByPollRepository, type AddPollRepository, type AddPollOptionsRepository, type CheckPollByIdRepository, type LoadPollsRepository, type LoadPollByIdRepository } from '@/data/protocols'
 import { type PollModel } from '@/domain/models'
+import { faker } from '@faker-js/faker'
 
 export class AddPollRepositorySpy implements AddPollRepository {
   poll: PollModel
-  async add (poll: PollModel): Promise<void> {
+  async add (poll: PollModel): Promise<AddPollRepository.Result> {
     this.poll = poll
+    return {
+      id: faker.database.mongodbObjectId(),
+      question: poll.question,
+      date: poll.date
+    }
   }
 }
 
-export class LoadAnswersByPollRepositorySpy implements LoadAnswersByPollRepository {
+export class AddPollOptionsRepositorySpy implements AddPollOptionsRepository {
+  pollOptionsData: AddPollOptionsRepository.Params
+  result: AddPollOptionsRepository.Result = []
+  async add (pollOptionsData: AddPollOptionsRepository.Params): Promise<AddPollOptionsRepository.Result> {
+    this.pollOptionsData = pollOptionsData
+    this.result = pollOptionsData.options.map((option) => ({
+      id: faker.database.mongodbObjectId(),
+      pollId: pollOptionsData.pollId,
+      option: option.option,
+      image: option.image
+    }))
+    return Promise.resolve(this.result)
+  }
+}
+
+export class LoadOptionsByPollRepositorySpy implements LoadOptionsByPollRepository {
   pollId: string
-  result = mockLoadAnswersByPollResult
-  async loadAnswers (pollId: string): Promise<LoadAnswersByPollRepository.Result> {
+  result = mockLoadOptionsByPollResult
+  async loadOptions (pollId: string): Promise<LoadOptionsByPollRepository.Result> {
     this.pollId = pollId
     return Promise.resolve(this.result)
   }
@@ -47,4 +68,4 @@ export class LoadPollsRepositorySpy implements LoadPollsRepository {
   }
 }
 
-export const mockLoadAnswersByPollResult = ['Answer 1', 'Answer 2']
+export const mockLoadOptionsByPollResult = ['Option 1', 'Option 2']
