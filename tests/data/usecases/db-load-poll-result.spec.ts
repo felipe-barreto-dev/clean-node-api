@@ -62,7 +62,7 @@ describe('DbLoadPollResult UseCase', () => {
     expect(loadByIdSpy).toHaveBeenCalledWith(pollId)
   })
 
-  test('Should return pollResultModel with all answers with count 0 if LoadPollResultRepository returns null', async () => {
+  test('Should return pollResultModel with all options with count 0 if LoadPollResultRepository returns null', async () => {
     const { sut, loadPollResultRepositorySpy, loadPollByIdRepositorySpy } = makeSut()
     jest.spyOn(loadPollResultRepositorySpy, 'loadByPollId').mockReturnValueOnce(Promise.resolve(null))
     const mockedResult = mockPollModel()
@@ -72,11 +72,11 @@ describe('DbLoadPollResult UseCase', () => {
       pollId: mockedResult.id,
       question: mockedResult.question,
       date: mockedResult.date,
-      answers: mockedResult.answers.map(answer => ({
-        ...answer,
+      options: mockedResult.options.map(option => ({
+        ...option,
         count: 0,
         percent: 0,
-        isCurrentAccountAnswer: false
+        isCurrentAccountOption: false
       }))
     })
   })
