@@ -1,3 +1,11 @@
+# Monorepo
+apps/*/node_modules
+apps/*/dist
+apps/*/.next
+apps/*/coverage
+apps/*/out
+
+# Existing
 node_modules
 dist
 coverage

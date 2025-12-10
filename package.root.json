@@ -1,0 +1,46 @@
+{
+  "name": "clean-node-api-monorepo",
+  "version": "2.5.0",
+  "private": true,
+  "description": "Monorepo for Clean Node API (Backend + Frontend)",
+  "author": "Felipe Barreto",
+  "license": "ISC",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm run debug --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev": "concurrently -n api,web -c blue,green \"npm:dev:api\" \"npm:dev:web\"",
+    "build:api": "npm run build --workspace=apps/api",
+    "build:web": "npm run build --workspace=apps/web",
+    "build": "npm run build:api && npm run build:web",
+    "start:api": "npm start --workspace=apps/api",
+    "start:web": "npm start --workspace=apps/web",
+    "test:api": "npm test --workspace=apps/api",
+    "test:web": "npm test --workspace=apps/web",
+    "test": "npm run test:api",
+    "lint:api": "npm run lint --workspace=apps/api",
+    "lint:web": "npm run lint --workspace=apps/web",
+    "lint": "npm run lint:api && npm run lint:web",
+    "up": "docker-compose up -d",
+    "down": "docker-compose down",
+    "logs:api": "docker-compose logs -f api",
+    "logs:web": "docker-compose logs -f web",
+    "logs": "docker-compose logs -f",
+    "clean": "npm run clean:deps && npm run clean:build",
+    "clean:deps": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:build": "rm -rf apps/*/dist apps/*/.next apps/*/out",
+    "install:all": "npm install && npm install --workspace=apps/api && npm install --workspace=apps/web",
+    "format": "prettier --write \"apps/**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}

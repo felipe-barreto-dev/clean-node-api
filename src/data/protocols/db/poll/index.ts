@@ -1,6 +1,0 @@
-export * from './add-poll-repository'
-export * from './add-poll-options-repository'
-export * from './load-poll-by-id-repository'
-export * from './load-options-by-poll-repository'
-export * from './check-poll-by-id-repository'
-export * from './load-polls-repository'

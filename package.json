@@ -1,71 +1,30 @@
 {
-  "name": "clean-node-api",
+  "name": "clean-node-api-monorepo",
   "version": "2.5.0",
-  "description": "NodeJs Rest API using TDD, Clean Architecture and Typescript",
-  "main": "index.js",
-  "engines": {
-    "node": "20"
-  },
+  "private": true,
+  "description": "Monorepo for Clean Node API (Backend + Frontend)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "start": "node dist/main/server.js",
-    "build": "rimraf dist && tsc --project tsconfig-build.json",
-    "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
-    "up": "npm run build && docker-compose up -d",
+    "dev:api": "npm run debug --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev": "concurrently \"npm:dev:api\" \"npm:dev:web\"",
+    "build:api": "npm run build --workspace=apps/api",
+    "build:web": "npm run build --workspace=apps/web",
+    "build": "npm run build:api && npm run build:web",
+    "test:api": "npm test --workspace=apps/api",
+    "test": "npm run test:api",
+    "up": "docker-compose up -d",
     "down": "docker-compose down",
-    "test": "jest --passWithNoTests --noStackTrace --runInBand",
-    "test:verbose": "jest --passWithNoTests --runInBand",
-    "test:unit": "npm test -- --watch -c jest-unit-config.js",
-    "test:integration": "npm test -- --watch -c jest-integration-config.js",
-    "test:staged": "npm test -- --findRelatedTests",
-    "test:ci": "npm test -- --coverage"
+    "clean": "rm -rf apps/*/node_modules apps/*/dist node_modules"
   },
-  "keywords": [],
-  "author": "Felipe Barreto",
-  "license": "ISC",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.23.3",
-    "@faker-js/faker": "^8.4.0",
-    "@shelf/jest-mongodb": "^4.2.0",
-    "@types/bcrypt": "^5.0.2",
-    "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.7",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/mongodb": "^4.0.7",
-    "@types/node": "^20.8.10",
-    "@types/supertest": "^2.0.16",
-    "@types/swagger-ui-express": "^4.1.6",
-    "@types/validator": "^13.11.7",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.9.1",
-    "eslint": "^8.53.0",
-    "eslint-config-standard-with-typescript": "^39.1.1",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "git-commit-msg-linter": "^5.0.4",
-    "husky": "^8.0.3",
-    "jest": "^29.7.0",
-    "lint-staged": "^15.0.2",
-    "mockdate": "^3.0.5",
-    "mongo-round": "^1.0.0",
-    "rimraf": "^5.0.5",
-    "supertest": "^6.3.3",
-    "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "concurrently": "^8.2.2"
   },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "module-alias": "^2.2.3",
-    "mongodb": "^6.3.0",
-    "nodemon": "3.1.10",
-    "socket.io": "^4.7.4",
-    "swagger-ui-express": "^5.0.0",
-    "validator": "^13.11.0"
-  },
-  "_moduleAliases": {
-    "@": "dist"
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   }
 }

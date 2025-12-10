@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  mongo:
+    container_name: clean-node-mongo
+    image: mongo:6
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=clean-node-api
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/clean-node-api --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: clean-node-api
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    working_dir: /usr/src/app
+    restart: always
+    command: npm run debug
+    volumes:
+      - ./apps/api/src:/usr/src/app/src
+      - ./apps/api/dist:/usr/src/app/dist
+      - api_node_modules:/usr/src/app/node_modules
+    ports:
+      - "5050:5050"
+      - "9222:9222"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/clean-node-api
+      - PORT=5050
+      - JWT_SECRET=${JWT_SECRET:-your-development-secret-change-in-production}
+      - NODE_ENV=${NODE_ENV:-development}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  web:
+    container_name: clean-node-web
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    working_dir: /usr/src/app
+    restart: always
+    command: npm run dev
+    volumes:
+      - ./apps/web/src:/usr/src/app/src
+      - ./apps/web/public:/usr/src/app/public
+      - web_node_modules:/usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:5050}
+      - NODE_ENV=${NODE_ENV:-development}
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  mongodb_data:
+    driver: local
+  api_node_modules:
+    driver: local
+  web_node_modules:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

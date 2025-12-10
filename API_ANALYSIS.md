@@ -315,35 +315,34 @@ npm run test:ci       # Testes com cobertura (CI/CD)
 
 ### 5.1 Segurança - CRÍTICO
 
-#### ⚠️ JWT Secret Hardcoded
-**Localização:** `src/main/config/env.ts:4`
+#### ✅ JWT Secret - PARCIALMENTE CORRIGIDO
+**Status:** Documentação criada, mas validação em produção pode estar faltando
 
-```typescript
-jwtSecret: process.env.JWT_SECRET || 'saf36ad*&&'
-```
+**Arquivos criados:**
+- `.env.example` - Template com instruções
+- `SECURITY.md` - Guidelines de segurança
 
-**Problema:** Secret fraco hardcoded no código.
+**Pendente:**
+- Validar que `JWT_SECRET` é obrigatório em produção
+- Implementar rotação de secrets
 
-**Impacto:** Um atacante pode gerar tokens JWT válidos.
+#### ⚠️ Vulnerabilidades de Dependências - CRÍTICO
 
-**Solução:**
-1. Gerar um secret forte (256 bits):
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
-2. Armazenar em variável de ambiente
-3. **NUNCA** fazer commit do secret real
-4. Lançar erro se `JWT_SECRET` não estiver definida em produção
+**Vulnerabilidades encontradas (Dezembro 2025):**
+1. **glob** (HIGH) - Command injection via CLI
+   - Severidade: 7.5 CVSS
+   - CVE: GHSA-5j98-mcp5-4vw2
+   - Afetado: rimraf > glob (10.2.0 - 10.4.5)
 
-#### ⚠️ Vulnerabilidades de Dependências - ALTO
-
-**Vulnerabilidades encontradas:**
-1. `body-parser` - DoS quando URL encoding está habilitado (HIGH)
-2. `@babel/helpers` - Complexidade ineficiente de RegExp (MODERATE)
+2. **js-yaml** (MODERATE) - Prototype pollution
+   - Severidade: 5.3 CVSS
+   - CVE: GHSA-mh29-5h37-fv8m
+   - Afetado: Dependência indireta
 
 **Solução:**
 ```bash
 npm audit fix
+npm update
 ```
 
 ### 5.2 Controle de Acesso - MÉDIO
@@ -515,7 +514,37 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['*']
    - Adicionar health check no docker-compose
    - Usar volumes nomeados em vez de bind mounts
 
-### 6.4 Código
+### 6.4 Socket.io - OPORTUNIDADE
+
+**Status:** Socket.io está instalado (v4.7.4) mas **não está sendo utilizado**
+
+**Oportunidades:**
+- Resultados de enquetes em tempo real
+- Notificações quando novas enquetes são criadas
+- Contador de votos ao vivo
+- Presença de usuários online
+
+**Implementação sugerida:**
+```typescript
+// src/main/config/socket.ts
+import { Server } from 'socket.io'
+
+export const setupSocket = (httpServer) => {
+  const io = new Server(httpServer, {
+    cors: { origin: process.env.ALLOWED_ORIGINS }
+  })
+
+  io.on('connection', (socket) => {
+    socket.on('poll:vote', (pollId) => {
+      io.to(`poll:${pollId}`).emit('poll:updated')
+    })
+  })
+
+  return io
+}
+```
+
+### 6.5 Código
 
 1. **TypeScript Strict Mode**
    - Habilitar todas as flags strict
@@ -590,7 +619,152 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['*']
 
 ---
 
-## 9. Conclusão
+## 9. Estrutura de Monorepo (Backend + Frontend)
+
+### 9.1 Motivação
+
+Para integrar um frontend Next.js no mesmo repositório, é recomendado reorganizar o projeto em uma estrutura de monorepo, mantendo backend e frontend separados mas versionados juntos.
+
+### 9.2 Estrutura Proposta
+
+```
+clean-node-api/
+├── apps/
+│   ├── api/                    # Backend (código atual)
+│   │   ├── src/
+│   │   ├── tests/
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   └── ...
+│   └── web/                    # Frontend Next.js
+│       ├── src/
+│       │   ├── app/            # App Router (Next.js 13+)
+│       │   ├── components/
+│       │   ├── lib/
+│       │   └── types/
+│       ├── public/
+│       ├── package.json
+│       ├── next.config.js
+│       └── tsconfig.json
+├── packages/                   # Pacotes compartilhados (opcional)
+│   └── shared/
+│       ├── types/              # Types TypeScript compartilhados
+│       └── utils/
+├── docker-compose.yml          # Orquestração de containers
+├── package.json                # Root package.json
+├── turbo.json                  # Turborepo config (opcional)
+└── README.md
+```
+
+### 9.3 Benefícios
+
+1. **Código compartilhado**: Types e utils podem ser compartilhados entre frontend e backend
+2. **Versionamento único**: Um único repositório para toda a aplicação
+3. **Deploy conjunto**: Facilita CI/CD
+4. **Desenvolvimento sincronizado**: Mudanças na API e frontend no mesmo PR
+
+### 9.4 Alternativas
+
+#### Opção A: Monorepo com Turborepo (Recomendado)
+```bash
+npm install -g turbo
+turbo init
+```
+
+**Vantagens:**
+- Build cache inteligente
+- Execução paralela de tasks
+- Usado por Vercel
+
+#### Opção B: Monorepo Simples (Mais fácil)
+```json
+// package.json raiz
+{
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "dev": "concurrently \"npm:dev:*\""
+  }
+}
+```
+
+#### Opção C: Repositórios Separados
+- Backend: `clean-node-api`
+- Frontend: `clean-node-web`
+
+**Quando usar:** Quando as aplicações têm ciclos de deploy independentes
+
+### 9.5 Integração Next.js + API
+
+**Comunicação:**
+```typescript
+// apps/web/src/lib/api.ts
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050'
+
+export async function getPolls() {
+  const res = await fetch(`${API_URL}/polls`, {
+    headers: {
+      'x-access-token': getToken()
+    }
+  })
+  return res.json()
+}
+```
+
+**Docker Compose atualizado:**
+```yaml
+version: "3"
+services:
+  mongo:
+    # ... mesmo config
+
+  api:
+    # ... mesmo config
+    ports:
+      - "5050:5050"
+
+  web:
+    build: ./apps/web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:5050
+    depends_on:
+      - api
+```
+
+### 9.6 Stack Frontend Recomendada
+
+**Next.js 14+ com App Router:**
+- **Framework**: Next.js 14
+- **Styling**: Tailwind CSS + shadcn/ui
+- **State Management**: Zustand ou React Context
+- **Data Fetching**: React Query (TanStack Query)
+- **Forms**: React Hook Form + Zod
+- **Auth**: next-auth ou implementação custom com JWT
+- **Real-time**: Socket.io client
+
+**Exemplo package.json:**
+```json
+{
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@tanstack/react-query": "^5.0.0",
+    "socket.io-client": "^4.7.4",
+    "zustand": "^4.4.0",
+    "zod": "^3.22.0",
+    "react-hook-form": "^7.48.0",
+    "tailwindcss": "^3.3.0"
+  }
+}
+```
+
+---
+
+## 10. Conclusão
 
 O **Clean Node API** é um projeto muito bem estruturado que demonstra excelente aplicação de princípios de Clean Architecture e TDD. A base do código é sólida e manutenível.
 
@@ -609,5 +783,6 @@ O **Clean Node API** é um projeto muito bem estruturado que demonstra excelente
 
 ---
 
-**Data da Análise:** 11/10/2025
+**Data da Análise:** 10/12/2025 (Atualizado)
 **Analista:** Claude Code Assistant
+**Versão do Documento:** 2.0
